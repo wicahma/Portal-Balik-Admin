@@ -1,6 +1,7 @@
 import Navbars from "@/components/Navbar";
 import React from "react";
 import Layout from "@/styles/Layout.module.css";
+import Product from "@/components/Product";
 
 const index = (props: any) => {
   return (
@@ -95,7 +96,7 @@ const index = (props: any) => {
               </div>
             </div>
           </div>
-          main data
+          <Product />
         </div>
       </main>
     </>
