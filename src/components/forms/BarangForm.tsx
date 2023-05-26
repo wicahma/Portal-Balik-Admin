@@ -42,11 +42,14 @@ const BarangForm = () => {
       setFieldValue("jenisBarang", dataBarangPilihan.jenisBarang);
       setFieldValue("namaPemegang", dataBarangPilihan.namaPemegang);
       //   setFieldValue("dokumenPemegang", dataBarangPilihan.dokumenPemegang);
-      setFieldValue("tanggalSPK", dataBarangPilihan.tanggalSPK);
+      setFieldValue("tanggalSPK", new Date(dataBarangPilihan.tanggalSPK).toISOString().slice(0, 10));
       setFieldValue("nomorSPK", dataBarangPilihan.nomorSPK);
-      setFieldValue("tanggalSPM", dataBarangPilihan.tanggalSPM);
+      setFieldValue(
+        "tanggalSPM",
+        new Date(dataBarangPilihan.tanggalSPM).toISOString().slice(0, 10)
+      );
       setFieldValue("nomorSPM", dataBarangPilihan.nomorSPM);
-      setFieldValue("tanggalSP2D", dataBarangPilihan.tanggalSP2D);
+      setFieldValue("tanggalSP2D", new Date(dataBarangPilihan.tanggalSP2D).toISOString().slice(0, 10));
       setFieldValue("nomorSP2D", dataBarangPilihan.nomorSP2D);
       setFieldValue("jumlahBarang", dataBarangPilihan.jumlahBarang);
       setFieldValue("hargaSatuan", dataBarangPilihan.hargaSatuan);
@@ -297,14 +300,13 @@ const BarangForm = () => {
             });
             resetForm();
           }}
-          // disabled={!values ? true : false}
         >
           Bersihkan Form
         </Button>
         <Button
           color="green"
           onClick={() => {
-            if (Object.keys(errors).length !== 0) {          
+            if (Object.keys(errors).length !== 0) {
               console.log("errors", errors);
               dispatch({
                 type: "main/setAlert",

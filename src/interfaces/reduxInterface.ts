@@ -53,6 +53,7 @@ export interface kualitasInterface {
   kualitas: string;
   status: string;
   barangKe: string;
+  fetchType?: "create" | "update";
 }
 
 export const initKualitas: kualitasInterface = {
@@ -62,6 +63,7 @@ export const initKualitas: kualitasInterface = {
   kualitas: "",
   status: "",
   barangKe: "1",
+  fetchType: "create",
 };
 
 export interface Item {

@@ -1,5 +1,15 @@
-import { kualitasInterface, reduxState } from "@/interfaces/reduxInterface";
-import { Button, Input, Option, Select, Tooltip } from "@material-tailwind/react";
+import {
+  barangInterface,
+  kualitasInterface,
+  reduxState,
+} from "@/interfaces/reduxInterface";
+import {
+  Button,
+  Input,
+  Option,
+  Select,
+  Tooltip,
+} from "@material-tailwind/react";
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +18,10 @@ const KualitasForm = () => {
   const dataKualitasPilihan: kualitasInterface | undefined | null = useSelector(
       (state: reduxState) => state.item.kualitas
     ),
+    barang: barangInterface[] = useSelector(
+      (state: reduxState) => state.item.dataBarang
+    ),
+    [dataBarang, setDataBarang] = React.useState<barangInterface[]>(barang),
     { setFieldValue, touched, isSubmitting, errors, values, resetForm }: any =
       useFormikContext(),
     dispatch = useDispatch(),
@@ -16,18 +30,35 @@ const KualitasForm = () => {
   // handleOpenPreview = () => setOpenPreview(!openPreview),
 
   useEffect(() => {
-    if (!values.dokumenPemegang && dataKualitasPilihan === undefined) {
+    if (!values.gambar && dataKualitasPilihan === undefined) {
       files.current!.value = "";
       files.current!.files = null;
     }
-  }, [values.dokumenPemegang, dataKualitasPilihan]);
+  }, [values.gambar, dataKualitasPilihan]);
 
   useEffect(() => {
     if (dataKualitasPilihan) {
       setFieldValue("_id", dataKualitasPilihan._id);
+      setFieldValue("_idBarang", dataKualitasPilihan._idBarang);
+      setFieldValue("barangKe", dataKualitasPilihan.barangKe);
+      setFieldValue("kualitas", dataKualitasPilihan.kualitas);
+      setFieldValue("status", dataKualitasPilihan.status);
       setFieldValue("fetchType", "update");
     }
   }, [dataKualitasPilihan, setFieldValue]);
+
+  const findBarang = (input: string) => {
+    if (input.length > 0) {
+      return setDataBarang(
+        barang.filter(
+          (item: barangInterface | any) =>
+            item._id.includes(input) ||
+            item.jenisBarang.toLowerCase().includes(input.toLowerCase())
+        )
+      );
+    }
+    return setDataBarang(barang);
+  };
 
   return (
     <div className="grid grid-cols-2 gap-5">
@@ -54,30 +85,43 @@ const KualitasForm = () => {
           mount: { y: 0 },
           unmount: { y: 25 },
         }}
+        onClick={(e) => {
+          (e: any) => {
+            alert("dititip");
+          };
+        }}
       >
-        <Option value="" >Material Tailwind HTML</Option>
-        <Option>Material Tailwind React</Option>
-        <Option>Material Tailwind Vue</Option>
-        <Option>Material Tailwind Angular</Option>
-        <Option>Material Tailwind Svelte</Option>
+        <Input
+          type="text"
+          color="gray"
+          label="Cari ID / Nama Barang"
+          onChange={(e) => findBarang(e.target.value)}
+          className=""
+        />
+        {dataBarang?.map((item: barangInterface, i: number) => (
+          <Option value={item._id} key={i + 1} className="uppercase">
+            {item._id} - {item.jenisBarang}
+          </Option>
+        ))}
       </Select>
       <div className="flex justify-between gap-5 flex-wrap md:flex-nowrap md:col-span-1 col-span-2 row-span-6">
         <div className="border rounded-lg p-5 flex justify-center items-center gap-3 flex-col border-blue-gray-200 w-full border-dashed">
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold ">Dokumen Pemegang</h3>
+            <h3 className="text-sm font-semibold ">Foto Kualitas Barang</h3>
             <div className="flex justify-start items-start gap-5">
               <input
                 type="file"
                 ref={files}
-                accept="application/pdf,application/vnd.ms-excel"
+                accept="image/*"
+                multiple={false}
                 onChange={(file: any) => {
                   const data = file.target.files[0];
-                  setFieldValue("dokumenPemegang", data);
+                  setFieldValue("gambar", data);
                 }}
                 className="relative m-0 block w-full min-w-0 flex-auto rounded-md border border-solid border-gray-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-gray-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-gray-400 file:px-3 file:py-[0.32rem] file:text-white file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-gray-200 focus:border-primary focus:text-gray-700 focus:shadow-te-primary focus:outline-none dark:border-gray-600 dark:text-gray-200 dark:file:bg-gray-700 dark:file:text-gray-100 dark:focus:border-primary"
               />
               <Tooltip
-                content={"Hapus files!"}
+                content={"Hapus Gambar!"}
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 0, y: 25 },
@@ -85,9 +129,9 @@ const KualitasForm = () => {
                 className="bg-white text-gray-700 shadow-xl"
               >
                 <Button
-                  disabled={!values.dokumenPemegang}
+                  disabled={!values.gambar}
                   onClick={() => {
-                    setFieldValue("dokumenPemegang", null);
+                    setFieldValue("gambar", null);
                     files.current!.value = "";
                     files.current!.files = null;
                   }}
@@ -112,7 +156,7 @@ const KualitasForm = () => {
               </Tooltip>
             </div>
             <div className="border-l-2 border-red-400 text-xs w-max text-red-400 pl-2">
-              <ErrorMessage name="dokumenPemegang" />
+              <ErrorMessage name="gambar" />
             </div>
           </div>
         </div>
@@ -259,7 +303,7 @@ const KualitasForm = () => {
           color="red"
           variant="text"
           onClick={() => {
-            dispatch({ type: "item/setBarang", payload: null });
+            dispatch({ type: "item/setKualitas", payload: null });
             dispatch({
               type: "main/setAlert",
               payload: {

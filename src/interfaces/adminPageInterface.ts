@@ -14,7 +14,7 @@ export function checkIfFilesAreTooBig(files?: any): boolean {
 export function checkIfFilesAreCorrectType(files?: any): boolean {
   let valid = true;
   if (files) {
-    if (!["application/pdf", "image/jpeg", "image/png"].includes(files.type)) {
+    if (!["application/pdf", "image/*"].includes(files.type)) {
       valid = false;
     }
   }
