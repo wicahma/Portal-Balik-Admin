@@ -9,13 +9,13 @@ import React from "react";
 import DataTable from "./DataTable";
 import { Formik } from "formik";
 import { useDispatch } from "react-redux";
-import * as Yup from "yup";
-
-const initialBarang = {};
-const initialKualitas = {};
-
-const kualitasValidationSchema = Yup.object().shape({});
-const barangValidationSchema = Yup.object().shape({});
+import BarangForm from "./forms/BarangForm";
+import KualitasForm from "./forms/KualitasForm";
+import { initBarang, initKualitas } from "@/interfaces/reduxInterface";
+import {
+  barangValidationSchema,
+  kualitasValidationSchema,
+} from "@/interfaces/adminPageInterface";
 
 const barang = [
   {
@@ -72,7 +72,7 @@ const Product = (props: any) => {
       desc: (
         <>
           <Formik
-            initialValues={initialBarang}
+            initialValues={initBarang}
             validationSchema={barangValidationSchema}
             validateOnChange
             validateOnMount
@@ -87,29 +87,32 @@ const Product = (props: any) => {
               return false;
             }}
           >
-            <div className="w-full overflow-x-auto">
-              <DataTable
-                identifier="barang"
-                tableTitle={[
-                  "ID Barang",
-                  "UPB",
-                  "Jenis Barang",
-                  "Nama Pemegang",
-                  "Dokumen Pemegang",
-                  "Tanggal SPK",
-                  "Nomor SPK",
-                  "Tanggal SPM",
-                  "Nomor SPM",
-                  "Tanggal SP2D",
-                  "Nomor SP2D",
-                  "Jumlah Barang",
-                  "Harga Satuan",
-                  "Jumlah Harga",
-                  "Total Belanja",
-                ]}
-                tableData={barang}
-              />
-            </div>
+            <>
+              <BarangForm />
+              <div className="w-full overflow-x-auto">
+                <DataTable
+                  identifier="barang"
+                  tableTitle={[
+                    "ID Barang",
+                    "UPB",
+                    "Jenis Barang",
+                    "Nama Pemegang",
+                    "Dokumen Pemegang",
+                    "Tanggal SPK",
+                    "Nomor SPK",
+                    "Tanggal SPM",
+                    "Nomor SPM",
+                    "Tanggal SP2D",
+                    "Nomor SP2D",
+                    "Jumlah Barang",
+                    "Harga Satuan",
+                    "Jumlah Harga",
+                    "Total Belanja",
+                  ]}
+                  tableData={barang}
+                />
+              </div>
+            </>
           </Formik>
         </>
       ),
@@ -120,7 +123,7 @@ const Product = (props: any) => {
       desc: (
         <>
           <Formik
-            initialValues={initialKualitas}
+            initialValues={initKualitas}
             validationSchema={kualitasValidationSchema}
             validateOnChange
             validateOnMount
@@ -135,20 +138,23 @@ const Product = (props: any) => {
               return false;
             }}
           >
-            <div className="w-full overflow-x-auto">
-              <DataTable
-                identifier="kualitas"
-                tableTitle={[
-                  "ID Kualitas",
-                  "ID Barang",
-                  "Gambar",
-                  "Kualitas",
-                  "Status",
-                  "Barang Ke",
-                ]}
-                tableData={kualitas}
-              />
-            </div>
+            <>
+              <KualitasForm />
+              <div className="w-full overflow-x-auto">
+                <DataTable
+                  identifier="kualitas"
+                  tableTitle={[
+                    "ID Kualitas",
+                    "ID Barang",
+                    "Gambar",
+                    "Kualitas",
+                    "Status",
+                    "Barang Ke",
+                  ]}
+                  tableData={kualitas}
+                />
+              </div>
+            </>
           </Formik>
         </>
       ),

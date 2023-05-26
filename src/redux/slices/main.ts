@@ -20,26 +20,28 @@ export const mainSlice = createSlice({
   initialState,
   reducers: {
     setAlert(state, action) {
-      return {
-        ...state,
-        alert: action.payload,
-      };
+      state.alert = action.payload;
+      // return {
+      //   ...state,
+      //   alert: action.payload,
+      // };
     },
 
     setLoading(state, action) {
-      return {
-        ...state,
-        isLoading: action.payload,
-      };
+      state.isLoading = action.payload;
+      // return {
+      //   ...state,
+      //   isLoading: action.payload,
+      // };
     },
 
     setToken(state, action) {
-      return {
-        ...state,
-        token: action.payload,
-      };
+      state.token = action.payload;
+      // return {
+      //   ...state,
+      //   token: action.payload,
+      // };
     },
-    
   },
   extraReducers: (builder) => {
     builder.addCase(hydrate, (state, action) => {
@@ -51,6 +53,6 @@ export const mainSlice = createSlice({
   },
 });
 
-export const { setToken, setAlert } = mainSlice.actions;
+export const { setToken, setAlert, setLoading } = mainSlice.actions;
 
 export default mainSlice.reducer;
