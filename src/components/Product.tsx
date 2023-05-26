@@ -19,29 +19,47 @@ const barangValidationSchema = Yup.object().shape({});
 
 const barang = [
   {
-    _id: "1",
-    upb: "1",
-    jenisBarang: "Buku",
-    tanggalSPK: "2021-08-01",
-    nomorSPK: "1",
-    tanggalSPM: "2021-08-01",
-    nomorSPM: "1",
-    tanggalSP2D: "2021-08-01",
-    nomorSP2D: "1",
-    jumlahBarang: "1",
-    hargaSatuan: "1",
-    jumlahHarga: "1",
-    totalBelanja: "1",
+    _id: "a3su5si23mn4c7123s3u7",
+    upb: "bagian umum",
+    jenisBarang: "Printer HP",
+    namaPemegang: "Al Husain Mardani",
+    dokumenPemegang: "Dokumen PDF",
+    tanggalSPK: "21 Maret 2022",
+    nomorSPK: "B/027/274/KPA/PPK/Umum.2/III/2022",
+    tanggalSPM: "23 Maret 2022",
+    nomorSPM: "15.13/03.0/000242/LS/4.01.0.00.0.00.01.0000/M/4/2022",
+    tanggalSP2D: "1 Januari 2023",
+    nomorSP2D: "15.13/04.0/000337/LS/4.01.0.00.0.00.01.0000/M/5/2022",
+    jumlahBarang: "3",
+    hargaSatuan: (4_300_000).toString(),
+    jumlahHarga: (12_900_000).toString(),
+    totalBelanja: (12_900_000).toString(),
   },
 ];
 const kualitas = [
   {
-    _id: "1",
-    _idBarang: "1",
-    gambar: "1",
-    kualitas: "Baik",
+    _id: "93syfdi23mn4c7asd7us0m",
+    _idBarang: "a3su5si23mn4c7123s3u7",
+    gambar: "gambar testing",
+    kualitas: "sedang",
     status: "digunakan",
     barangKe: "1",
+  },
+  {
+    _id: "93syfdi23mn4c7asd7u123",
+    _idBarang: "a3su5si23mn4c7123s3u7",
+    gambar: "gambar testing",
+    kualitas: "baik",
+    status: "tidak digunakan",
+    barangKe: "2",
+  },
+  {
+    _id: "93syfdi23mn4c7asd7us01",
+    _idBarang: "a3su5si23mn4c7123s3u7",
+    gambar: "gambar testing",
+    kualitas: "buruk",
+    status: "digunakan",
+    barangKe: "3",
   },
 ];
 
@@ -76,6 +94,8 @@ const Product = (props: any) => {
                   "ID Barang",
                   "UPB",
                   "Jenis Barang",
+                  "Nama Pemegang",
+                  "Dokumen Pemegang",
                   "Tanggal SPK",
                   "Nomor SPK",
                   "Tanggal SPM",
@@ -118,7 +138,14 @@ const Product = (props: any) => {
             <div className="w-full overflow-x-auto">
               <DataTable
                 identifier="kualitas"
-                tableTitle={["ID Kualitas", "ID Barang"]}
+                tableTitle={[
+                  "ID Kualitas",
+                  "ID Barang",
+                  "Gambar",
+                  "Kualitas",
+                  "Status",
+                  "Barang Ke",
+                ]}
                 tableData={kualitas}
               />
             </div>

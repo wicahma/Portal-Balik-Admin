@@ -1,10 +1,14 @@
 import { Alert } from "@material-tailwind/react";
-import { AlertProps } from "@/interfaces/reduxInterface";
+import { AlertProps, reduxState } from "@/interfaces/reduxInterface";
 import { colors } from "@material-tailwind/react/types/generic";
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const Alerts = (props: AlertProps) => {
-  const { show, message, type } = props;
+const Alerts = () => {
+  const dispatch = useDispatch();
+  const { show, message, type } = useSelector(
+    (state: reduxState) => state.main.alert
+  );
   const [color, setColor] = React.useState<colors | undefined>();
 
   useEffect(() => {
@@ -26,12 +30,23 @@ const Alerts = (props: AlertProps) => {
     }
   }, [type]);
 
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        dispatch({
+          type: "main/setAlert",
+          payload: { show: false, message: "none", type: "info" },
+        });
+      }, 3000);
+    }
+  }, [show, dispatch]);
+
   return (
     <Alert
       open={show}
-      className="fixed lg:container w-[90%] top-16 left-1/2 !z-[3000]"
+      className="fixed shadow-xl lg:container w-[90%] top-16 left-1/2 !z-[3000]"
       color={color}
-      variant="gradient"
+      variant="filled"
       icon={
         <svg
           xmlns="http://www.w3.org/2000/svg"

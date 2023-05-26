@@ -10,6 +10,7 @@ import { Form, Formik } from "formik";
 import { Button, Checkbox, Input } from "@material-tailwind/react";
 import Alert from "@/components/Alert";
 import * as Yup from "yup";
+import Loading from "@/components/Loading";
 
 interface adminProps {
   email: string | null;
@@ -32,24 +33,31 @@ const Home = (props: any) => {
     initialValues: adminProps = {
       email: null,
       password: null,
-    },
-    alert = useSelector((state: reduxState) => state.main.alert);
+    };
+  // alert = useSelector((state: reduxState) => state.main.alert);
 
   const handleLogin = async (data: any) => {
     console.log(data);
-    router.push("/dashboard");
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
+    dispatch({
+      type: "main/setAlert",
+      payload: {
+        show: true,
+        message: "Login berhasil",
+        type: "success",
+      },
+    });
+    setTimeout(() => {
+      dispatch({
+        type: "main/setLoading",
+        payload: false,
+      });
+      router.push("/dashboard");
+    }, 3000);
   };
-
-  useEffect(() => {
-    if (alert.show === true) {
-      setTimeout(() => {
-        dispatch({
-          type: "main/setAlert",
-          payload: { ...alert, show: false },
-        });
-      }, 3000);
-    }
-  }, [alert, alert.show, dispatch]);
 
   return (
     <>
@@ -60,7 +68,8 @@ const Home = (props: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex w-screen h-screen">
-        <Alert message={alert.message} show={alert.show} type={alert.type} />
+        <Alert />
+        <Loading />
         <div className="flex grow justify-center items-center">
           <Formik
             initialValues={initialValues}

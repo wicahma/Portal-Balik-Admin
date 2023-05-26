@@ -1,0 +1,21 @@
+.svg {
+  width: 3.75em;
+  animation: 1.5s spin ease infinite;
+}
+
+.ring {
+  fill: none;
+  stroke: hsla(212, 88%, 51%, 0.3);
+  stroke-width: 1;
+}
+
+.ball {
+  fill: #0a8dff;
+  stroke: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(720deg);
+  }
+}

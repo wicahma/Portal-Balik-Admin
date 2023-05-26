@@ -2,11 +2,15 @@ import Navbars from "@/components/Navbar";
 import React from "react";
 import Layout from "@/styles/Layout.module.css";
 import Product from "@/components/Product";
+import Alerts from "@/components/Alert";
+import Loading from "@/components/Loading";
 
 const index = (props: any) => {
   return (
     <>
       <main className="bg-white">
+        <Alerts />
+        <Loading />
         <Navbars />
         <div className="min-h-screen w-screen border-l grow flex flex-col overflow-hidden">
           <div className="flex gap-5 bg-blue-400 pb-20 pt-36 justify-center flex-col lg:flex-row">
