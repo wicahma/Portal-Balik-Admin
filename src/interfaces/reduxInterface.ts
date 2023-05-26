@@ -15,17 +15,17 @@ export interface barangInterface {
   upb: string;
   jenisBarang: string;
   namaPemegang: string;
-  dokumenPemegang: [File] | string;
+  dokumenPemegang: [File] | null;
   tanggalSPK: string;
   nomorSPK: string;
   tanggalSPM: string;
   nomorSPM: string;
   tanggalSP2D: string;
   nomorSP2D: string;
-  jumlahBarang: string;
-  hargaSatuan: string;
-  jumlahHarga: string;
-  totalBelanja: string;
+  jumlahBarang: number;
+  hargaSatuan: number;
+  jumlahHarga: number;
+  fetchType?: "create" | "update";
 }
 
 export const initBarang: barangInterface = {
@@ -33,17 +33,17 @@ export const initBarang: barangInterface = {
   upb: "",
   jenisBarang: "",
   namaPemegang: "",
-  dokumenPemegang: "",
+  dokumenPemegang: null,
   tanggalSPK: "",
   nomorSPK: "",
   tanggalSPM: "",
   nomorSPM: "",
   tanggalSP2D: "",
   nomorSP2D: "",
-  jumlahBarang: "",
-  hargaSatuan: "",
-  jumlahHarga: "",
-  totalBelanja: "",
+  jumlahBarang: 0,
+  hargaSatuan: 0,
+  jumlahHarga: 0,
+  fetchType: "create",
 };
 
 export interface kualitasInterface {
@@ -65,8 +65,10 @@ export const initKualitas: kualitasInterface = {
 };
 
 export interface Item {
-  barang: barangInterface;
-  kualitas: kualitasInterface;
+  barang: barangInterface | null | undefined;
+  kualitas: kualitasInterface | null | undefined;
+  dataBarang: barangInterface[];
+  dataKualitas: kualitasInterface[];
 }
 
 export interface reduxState {

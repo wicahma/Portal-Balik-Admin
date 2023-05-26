@@ -3,12 +3,10 @@ import * as Yup from "yup";
 export function checkIfFilesAreTooBig(files?: any): boolean {
   let valid = true;
   if (files) {
-    files.map((file: any) => {
-      const size = file.size / 1024 / 1024;
-      if (size > 10) {
-        valid = false;
-      }
-    });
+    const size = files.size / 1024 / 1024;
+    if (size > 10) {
+      valid = false;
+    }
   }
   return valid;
 }
@@ -16,11 +14,9 @@ export function checkIfFilesAreTooBig(files?: any): boolean {
 export function checkIfFilesAreCorrectType(files?: any): boolean {
   let valid = true;
   if (files) {
-    files.map((file: any) => {
-      if (!["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
-        valid = false;
-      }
-    });
+    if (!["application/pdf", "image/jpeg", "image/png"].includes(files.type)) {
+      valid = false;
+    }
   }
   return valid;
 }
@@ -45,7 +41,9 @@ export const kualitasValidationSchema = Yup.object().shape({
     ),
   kualitas: Yup.string().required("Kualitas dibutuhkan!"),
   status: Yup.string().required("Status dibutuhkan!"),
-  barangKe: Yup.string().required("Barang Ke dibutuhkan!"),
+  barangKe: Yup.number()
+    .required("Barang Ke dibutuhkan!")
+    .typeError("List Barang harus berupa angka!"),
 });
 
 export const barangValidationSchema = Yup.object().shape({
@@ -67,34 +65,28 @@ export const barangValidationSchema = Yup.object().shape({
       "VALIDATION_FIELD_FILE_WRONG_TYPE",
       checkIfFilesAreCorrectType
     ),
-  tanggalSPK: Yup.string()
-    .required("Tanggal SPK dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
+  tanggalSPK: Yup.date().required("Tanggal SPK dibutuhkan!"),
   nomorSPK: Yup.string()
     .required("Nomor SPK dibutuhkan!")
     .max(255, "Karakter maksimal 255!"),
-  tanggalSPM: Yup.string()
-    .required("Tanggal SPM dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
+  tanggalSPM: Yup.date().required("Tanggal SPM dibutuhkan!"),
   nomorSPM: Yup.string()
     .required("Nomor SPM dibutuhkan!")
     .max(255, "Karakter maksimal 255!"),
-  tanggalSP2D: Yup.string()
-    .required("Tanggal SP2D dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
+  tanggalSP2D: Yup.date().required("Tanggal SP2D dibutuhkan!"),
   nomorSP2D: Yup.string()
     .required("Nomor SP2D dibutuhkan!")
     .max(255, "Karakter maksimal 255!"),
-  jumlahBarang: Yup.string()
+  jumlahBarang: Yup.number()
     .required("Jumlah Barang dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
-  hargaSatuan: Yup.string()
+    .typeError("Jumlah Barang harus berupa angka!")
+    .min(1, "Jumlah Barang tidak boleh kurang dari 0!"),
+  hargaSatuan: Yup.number()
     .required("Harga Satuan dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
-  jumlahHarga: Yup.string()
+    .typeError("Harga Satuan harus berupa angka!")
+    .min(1, "Harga Satuan tidak boleh kurang dari 0!"),
+  jumlahHarga: Yup.number()
     .required("Jumlah Harga dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
-  totalBelanja: Yup.string()
-    .required("Total Belanja dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
+    .typeError("Jumlah Harga harus berupa angka!")
+    .min(1, "Jumlah Harga tidak boleh kurang dari 0!"),
 });

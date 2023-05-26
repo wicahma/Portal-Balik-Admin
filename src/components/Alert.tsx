@@ -44,7 +44,7 @@ const Alerts = () => {
   return (
     <Alert
       open={show}
-      className="fixed shadow-xl lg:container w-[90%] top-16 left-1/2 !z-[3000]"
+      className="fixed shadow-xl lg:container w-[90%] top-20 left-1/2 !z-[3000]"
       color={color}
       variant="filled"
       icon={

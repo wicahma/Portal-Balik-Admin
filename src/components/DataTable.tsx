@@ -439,17 +439,18 @@ const DataTable = (props: any) => {
                     <div
                       onClick={() => {
                         switch (identifier) {
-                          //   case "car":
-                          //     dispatch({
-                          //       type: "produk/setSelectedDataMobil",
-                          //       payload: data,
-                          //     });
-                          //     break;
-                          //   case "wisata":
-                          //     getDataProduk(data, identifier, "edit");
-                          //     break;
-                          //   case "outbond":
-                          //     getDataProduk(data, identifier, "edit");
+                          case "barang":
+                            dispatch({
+                              type: "item/setBarang",
+                              payload: data,
+                            });
+                            break;
+                          case "kualitas":
+                            dispatch({
+                              type: "item/setKualitas",
+                              payload: data,
+                            });
+                            break;
                           default:
                             dispatch({
                               type: "main/setLoading",
@@ -463,7 +464,6 @@ const DataTable = (props: any) => {
                                 show: true,
                               },
                             });
-                            break;
                         }
                       }}
                       className="w-4 transform hover:text-red-500 hover:scale-110"

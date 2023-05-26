@@ -7,64 +7,24 @@ import {
 } from "@material-tailwind/react";
 import React from "react";
 import DataTable from "./DataTable";
-import { Formik } from "formik";
-import { useDispatch } from "react-redux";
+import { Form, Formik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
 import BarangForm from "./forms/BarangForm";
 import KualitasForm from "./forms/KualitasForm";
-import { initBarang, initKualitas } from "@/interfaces/reduxInterface";
+import {
+  initBarang,
+  initKualitas,
+  reduxState,
+} from "@/interfaces/reduxInterface";
 import {
   barangValidationSchema,
   kualitasValidationSchema,
 } from "@/interfaces/adminPageInterface";
 
-const barang = [
-  {
-    _id: "a3su5si23mn4c7123s3u7",
-    upb: "bagian umum",
-    jenisBarang: "Printer HP",
-    namaPemegang: "Al Husain Mardani",
-    dokumenPemegang: "Dokumen PDF",
-    tanggalSPK: "21 Maret 2022",
-    nomorSPK: "B/027/274/KPA/PPK/Umum.2/III/2022",
-    tanggalSPM: "23 Maret 2022",
-    nomorSPM: "15.13/03.0/000242/LS/4.01.0.00.0.00.01.0000/M/4/2022",
-    tanggalSP2D: "1 Januari 2023",
-    nomorSP2D: "15.13/04.0/000337/LS/4.01.0.00.0.00.01.0000/M/5/2022",
-    jumlahBarang: "3",
-    hargaSatuan: (4_300_000).toString(),
-    jumlahHarga: (12_900_000).toString(),
-    totalBelanja: (12_900_000).toString(),
-  },
-];
-const kualitas = [
-  {
-    _id: "93syfdi23mn4c7asd7us0m",
-    _idBarang: "a3su5si23mn4c7123s3u7",
-    gambar: "gambar testing",
-    kualitas: "sedang",
-    status: "digunakan",
-    barangKe: "1",
-  },
-  {
-    _id: "93syfdi23mn4c7asd7u123",
-    _idBarang: "a3su5si23mn4c7123s3u7",
-    gambar: "gambar testing",
-    kualitas: "baik",
-    status: "tidak digunakan",
-    barangKe: "2",
-  },
-  {
-    _id: "93syfdi23mn4c7asd7us01",
-    _idBarang: "a3su5si23mn4c7123s3u7",
-    gambar: "gambar testing",
-    kualitas: "buruk",
-    status: "digunakan",
-    barangKe: "3",
-  },
-];
-
 const Product = (props: any) => {
   const dispatch = useDispatch();
+  const barang = useSelector((state: reduxState) => state.item.dataBarang);
+  const kualitas = useSelector((state: reduxState) => state.item.dataKualitas);
   const data = [
     {
       label: "Barang",
@@ -78,16 +38,17 @@ const Product = (props: any) => {
             validateOnMount
             onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(true);
-              dispatch({
-                type: "main/setLoading",
-                payload: true,
-              });
+              // dispatch({
+              //   type: "main/setLoading",
+              //   payload: true,
+              // });
+              console.log(values);
               setSubmitting(true);
               //   fetchProduk("outbond", values, values._id);
               return false;
             }}
           >
-            <>
+            <Form>
               <BarangForm />
               <div className="w-full overflow-x-auto">
                 <DataTable
@@ -112,7 +73,7 @@ const Product = (props: any) => {
                   tableData={barang}
                 />
               </div>
-            </>
+            </Form>
           </Formik>
         </>
       ),
@@ -138,7 +99,7 @@ const Product = (props: any) => {
               return false;
             }}
           >
-            <>
+            <Form>
               <KualitasForm />
               <div className="w-full overflow-x-auto">
                 <DataTable
@@ -154,7 +115,7 @@ const Product = (props: any) => {
                   tableData={kualitas}
                 />
               </div>
-            </>
+            </Form>
           </Formik>
         </>
       ),
@@ -162,7 +123,7 @@ const Product = (props: any) => {
   ];
 
   return (
-    <div className="max-w-full w-full block md:p-10 py-10 px-2">
+    <div className=" container mx-auto block md:p-10 py-10 px-2">
       <Tabs value="barang" className="max-w-full">
         <TabsHeader className="">
           {data.map(({ label, value }) => (

@@ -21,26 +21,14 @@ export const mainSlice = createSlice({
   reducers: {
     setAlert(state, action) {
       state.alert = action.payload;
-      // return {
-      //   ...state,
-      //   alert: action.payload,
-      // };
     },
 
     setLoading(state, action) {
       state.isLoading = action.payload;
-      // return {
-      //   ...state,
-      //   isLoading: action.payload,
-      // };
     },
 
     setToken(state, action) {
       state.token = action.payload;
-      // return {
-      //   ...state,
-      //   token: action.payload,
-      // };
     },
   },
   extraReducers: (builder) => {

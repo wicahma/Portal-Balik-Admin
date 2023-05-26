@@ -21,7 +21,7 @@ const NavList = (props: any) => {
           href="/"
           className="flex items-center hover:text-blue-500 transition-colors"
         >
-          <Button color="red" type="button">
+          <Button color="red" size="sm" type="button">
             Logout
           </Button>
         </Link>
@@ -45,16 +45,13 @@ const Navbars = () => {
   }, []);
 
   return (
-    <Navbar
-      color="blue"
-      className="mx-auto fixed top-0 right-1/2 translate-x-1/2 rounded-2xl !w-screen px-6 py-3"
-    >
+    <Navbar className="mx-auto bg-sky-300 z-[2000] border-none fixed top-0 right-1/2 translate-x-1/2 rounded-2xl !w-screen px-6 py-3">
       <div className="flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
           href="#"
           variant="h6"
-          className="mr-4 text-white cursor-pointer py-1.5"
+          className="mr-4 text-gray-800 cursor-pointer py-1.5"
         >
           Portal Balik
         </Typography>
