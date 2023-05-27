@@ -53,6 +53,18 @@ export const kualitasValidationSchema = Yup.object().shape({
       "Tipe File Salah, hanya menerima tipedata Gambar!",
       checkImage
     ),
+  namaPemegang: Yup.string()
+    .required("Nama Pemegang dibutuhkan!")
+    .max(255, "Karakter maksimal 255!"),
+  dokumenPemegang: Yup.mixed()
+    .nullable()
+    .required("Dokumen Pemegang dibutuhkan!")
+    .test(
+      "is-correct-file",
+      "Ukuran File Terlalu besar! maks 5Mb",
+      checkIfFilesAreTooBig
+    )
+    .test("is-big-file", "Tipe File Salah! Hanya menerima file PDF", checkPDF),
   kualitas: Yup.string().required("Kualitas dibutuhkan!"),
   status: Yup.string().required("Status dibutuhkan!"),
   barangKe: Yup.number()
@@ -67,18 +79,6 @@ export const barangValidationSchema = Yup.object().shape({
   jenisBarang: Yup.string()
     .required("Jenis Barang dibutuhkan!")
     .max(255, "Karakter maksimal 255!"),
-  namaPemegang: Yup.string()
-    .required("Nama Pemegang dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
-  dokumenPemegang: Yup.mixed()
-    .nullable()
-    .required("Dokumen Pemegang dibutuhkan!")
-    .test(
-      "is-correct-file",
-      "Ukuran File Terlalu besar! maks 5Mb",
-      checkIfFilesAreTooBig
-    )
-    .test("is-big-file", "Tipe File Salah! Hanya menerima file PDF", checkPDF),
   tanggalSPK: Yup.date().required("Tanggal SPK dibutuhkan!"),
   nomorSPK: Yup.string()
     .required("Nomor SPK dibutuhkan!")

@@ -14,8 +14,6 @@ export interface barangInterface {
   _id?: string;
   upb: string;
   jenisBarang: string;
-  namaPemegang: string;
-  dokumenPemegang: [File] | null;
   tanggalSPK: string;
   nomorSPK: string;
   tanggalSPM: string;
@@ -32,8 +30,6 @@ export const initBarang: barangInterface = {
   _id: "",
   upb: "",
   jenisBarang: "",
-  namaPemegang: "",
-  dokumenPemegang: null,
   tanggalSPK: "",
   nomorSPK: "",
   tanggalSPM: "",
@@ -50,6 +46,8 @@ export interface kualitasInterface {
   _id?: string;
   _idBarang: string;
   gambar: string;
+  namaPemegang: string;
+  dokumenPemegang: [File] | null;
   kualitas: string;
   status: string;
   barangKe: string;
@@ -60,6 +58,8 @@ export const initKualitas: kualitasInterface = {
   _id: "",
   _idBarang: "",
   gambar: "",
+  namaPemegang: "",
+  dokumenPemegang: null,
   kualitas: "",
   status: "",
   barangKe: "",
