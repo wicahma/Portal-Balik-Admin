@@ -62,7 +62,7 @@ export const initKualitas: kualitasInterface = {
   gambar: "",
   kualitas: "",
   status: "",
-  barangKe: "1",
+  barangKe: "",
   fetchType: "create",
 };
 

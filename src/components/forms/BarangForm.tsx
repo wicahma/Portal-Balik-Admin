@@ -42,14 +42,20 @@ const BarangForm = () => {
       setFieldValue("jenisBarang", dataBarangPilihan.jenisBarang);
       setFieldValue("namaPemegang", dataBarangPilihan.namaPemegang);
       //   setFieldValue("dokumenPemegang", dataBarangPilihan.dokumenPemegang);
-      setFieldValue("tanggalSPK", new Date(dataBarangPilihan.tanggalSPK).toISOString().slice(0, 10));
+      setFieldValue(
+        "tanggalSPK",
+        new Date(dataBarangPilihan.tanggalSPK).toISOString().slice(0, 10)
+      );
       setFieldValue("nomorSPK", dataBarangPilihan.nomorSPK);
       setFieldValue(
         "tanggalSPM",
         new Date(dataBarangPilihan.tanggalSPM).toISOString().slice(0, 10)
       );
       setFieldValue("nomorSPM", dataBarangPilihan.nomorSPM);
-      setFieldValue("tanggalSP2D", new Date(dataBarangPilihan.tanggalSP2D).toISOString().slice(0, 10));
+      setFieldValue(
+        "tanggalSP2D",
+        new Date(dataBarangPilihan.tanggalSP2D).toISOString().slice(0, 10)
+      );
       setFieldValue("nomorSP2D", dataBarangPilihan.nomorSP2D);
       setFieldValue("jumlahBarang", dataBarangPilihan.jumlahBarang);
       setFieldValue("hargaSatuan", dataBarangPilihan.hargaSatuan);
@@ -298,6 +304,8 @@ const BarangForm = () => {
                 show: true,
               },
             });
+            files.current!.value = "";
+            files.current!.files = null;
             resetForm();
           }}
         >

@@ -11,10 +11,20 @@ export function checkIfFilesAreTooBig(files?: any): boolean {
   return valid;
 }
 
-export function checkIfFilesAreCorrectType(files?: any): boolean {
+export function checkPDF(files?: any): boolean {
   let valid = true;
   if (files) {
-    if (!["application/pdf", "image/*"].includes(files.type)) {
+    if (!"application/pdf".includes(files.type)) {
+      valid = false;
+    }
+  }
+  return valid;
+}
+
+export function checkImage(files?: any): boolean {
+  let valid = true;
+  if (files) {
+    if (!files.type.includes("image")) {
       valid = false;
     }
   }
@@ -33,11 +43,15 @@ export const kualitasValidationSchema = Yup.object().shape({
   gambar: Yup.mixed()
     .nullable()
     .required("Gambar dibutuhkan!")
-    .test("is-correct-file", "VALIDATION_FIELD_FILE_BIG", checkIfFilesAreTooBig)
+    .test(
+      "is-correct-file",
+      "Ukuran File terlalu besar, maksimal 5Mb!",
+      checkIfFilesAreTooBig
+    )
     .test(
       "is-big-file",
-      "VALIDATION_FIELD_FILE_WRONG_TYPE",
-      checkIfFilesAreCorrectType
+      "Tipe File Salah, hanya menerima tipedata Gambar!",
+      checkImage
     ),
   kualitas: Yup.string().required("Kualitas dibutuhkan!"),
   status: Yup.string().required("Status dibutuhkan!"),
@@ -59,12 +73,12 @@ export const barangValidationSchema = Yup.object().shape({
   dokumenPemegang: Yup.mixed()
     .nullable()
     .required("Dokumen Pemegang dibutuhkan!")
-    .test("is-correct-file", "VALIDATION_FIELD_FILE_BIG", checkIfFilesAreTooBig)
     .test(
-      "is-big-file",
-      "VALIDATION_FIELD_FILE_WRONG_TYPE",
-      checkIfFilesAreCorrectType
-    ),
+      "is-correct-file",
+      "Ukuran File Terlalu besar! maks 5Mb",
+      checkIfFilesAreTooBig
+    )
+    .test("is-big-file", "Tipe File Salah! Hanya menerima file PDF", checkPDF),
   tanggalSPK: Yup.date().required("Tanggal SPK dibutuhkan!"),
   nomorSPK: Yup.string()
     .required("Nomor SPK dibutuhkan!")

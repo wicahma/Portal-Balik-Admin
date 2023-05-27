@@ -22,6 +22,7 @@ const KualitasForm = () => {
       (state: reduxState) => state.item.dataBarang
     ),
     [dataBarang, setDataBarang] = React.useState<barangInterface[]>(barang),
+    [dataBarangKe, setDataBarangKe] = React.useState<number[]>([]),
     { setFieldValue, touched, isSubmitting, errors, values, resetForm }: any =
       useFormikContext(),
     dispatch = useDispatch(),
@@ -47,6 +48,17 @@ const KualitasForm = () => {
     }
   }, [dataKualitasPilihan, setFieldValue]);
 
+  useEffect(() => {
+    if (values._idBarang) {
+      const data: barangInterface = barang.filter(
+        (item: barangInterface) => item._id === values._idBarang
+      )[0];
+      for (let i = 1; i <= data.jumlahBarang; i++) {
+        setDataBarangKe((prev) => [...prev, i]);
+      }
+    }
+  }, [values._idBarang, barang, setFieldValue]);
+
   const findBarang = (input: string) => {
     if (input.length > 0) {
       return setDataBarang(
@@ -61,50 +73,54 @@ const KualitasForm = () => {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-5">
+    <div className="grid grid-cols-9 gap-3">
       {dataKualitasPilihan && (
-        <div className="bg-white col-span-2 shadow-xl rounded-lg px-3 py-2 uppercase text-center font-normal">
+        <div className="bg-white col-span-9 shadow-xl rounded-lg px-3 py-2 uppercase text-center font-normal">
           <span className="bg-red-400 rounded-md px-2 text-white mx-1">
             update
           </span>
           Id - {dataKualitasPilihan._id}
         </div>
       )}
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${errors.upb && touched.upb ? errors.upb : "upb"}`}
-        onChange={(e) => setFieldValue("upb", e.target.value)}
-        error={errors.upb && touched.upb}
-        value={values.upb ?? ""}
-      />
-      <Select
-        label="ID Barang"
-        animate={{
-          mount: { y: 0 },
-          unmount: { y: 25 },
-        }}
-        onClick={(e) => {
-          (e: any) => {
-            alert("dititip");
-          };
-        }}
-      >
-        <Input
-          type="text"
-          color="gray"
-          label="Cari ID / Nama Barang"
-          onChange={(e) => findBarang(e.target.value)}
-          className=""
-        />
-        {dataBarang?.map((item: barangInterface, i: number) => (
-          <Option value={item._id} key={i + 1} className="uppercase">
-            {item._id} - {item.jenisBarang}
-          </Option>
-        ))}
-      </Select>
-      <div className="flex justify-between gap-5 flex-wrap md:flex-nowrap md:col-span-1 col-span-2 row-span-6">
+      <div className="col-span-6 relative">
+        <Select
+          animate={{
+            mount: { y: 0 },
+            unmount: { y: 25 },
+          }}
+          label={`${
+            errors._idBarang && touched._idBarang
+              ? errors._idBarang
+              : "ID Barang"
+          }`}
+          value={values._idBarang}
+          error={touched._idBarang && errors._idBarang ? true : false}
+          onMouseUp={() => setDataBarang(barang)}
+          onChange={(e) => setFieldValue("_idBarang", e)}
+        >
+          <Input
+            type="text"
+            color="gray"
+            label="Cari ID / Nama Barang"
+            onChange={(e) => findBarang(e.target.value)}
+          />
+          {dataBarang?.map((item: barangInterface, i: number) => (
+            <Option value={item._id} key={item._id} className="uppercase">
+              {item._id} - {item.jenisBarang}
+            </Option>
+          ))}
+        </Select>
+        <div className="absolute top-3 left-3 uppercase text-sm -z-10">
+          {values._idBarang &&
+            dataBarang.filter((item) => item._id === values._idBarang)[0]
+              ._id}{" "}
+          -{" "}
+          {values._idBarang &&
+            dataBarang.filter((data) => data._id === values._idBarang)[0]
+              .jenisBarang}
+        </div>
+      </div>
+      <div className="flex justify-between gap-5 flex-wrap md:flex-nowrap md:col-span-3 row-span-2 col-span-9">
         <div className="border rounded-lg p-5 flex justify-center items-center gap-3 flex-col border-blue-gray-200 w-full border-dashed">
           <div className="space-y-2">
             <h3 className="text-sm font-semibold ">Foto Kualitas Barang</h3>
@@ -161,144 +177,74 @@ const KualitasForm = () => {
           </div>
         </div>
       </div>
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.kualitas && touched.kualitas ? errors.kualitas : "kualitas"
-        }`}
-        onChange={(e) => setFieldValue("kualitas", e.target.value)}
-        error={errors.kualitas && touched.kualitas}
-        value={values.kualitas ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.namaPemegang && touched.namaPemegang
-            ? errors.namaPemegang
-            : "Nama Pemegang"
-        }`}
-        onChange={(e) => setFieldValue("namaPemegang", e.target.value)}
-        error={errors.namaPemegang && touched.namaPemegang}
-        value={values.namaPemegang ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.tanggalSPK && touched.tanggalSPK
-            ? errors.tanggalSPK
-            : "Tanggal SPK"
-        }`}
-        onChange={(e) => setFieldValue("tanggalSPK", e.target.value)}
-        error={errors.tanggalSPK && touched.tanggalSPK}
-        value={values.tanggalSPK ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.nomorSPK && touched.nomorSPK ? errors.nomorSPK : "Nomor SPK"
-        }`}
-        onChange={(e) => setFieldValue("nomorSPK", e.target.value)}
-        error={errors.nomorSPK && touched.nomorSPK}
-        value={values.nomorSPK ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.tanggalSPM && touched.tanggalSPM
-            ? errors.tanggalSPM
-            : "Tanggal SPM"
-        }`}
-        onChange={(e) => setFieldValue("tanggalSPM", e.target.value)}
-        error={errors.tanggalSPM && touched.tanggalSPM}
-        value={values.tanggalSPM ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.nomorSPM && touched.nomorSPM ? errors.nomorSPM : "Nomor SPM"
-        }`}
-        onChange={(e) => setFieldValue("nomorSPM", e.target.value)}
-        error={errors.nomorSPM && touched.nomorSPM}
-        value={values.nomorSPM ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.tanggalSP2D && touched.tanggalSP2D
-            ? errors.tanggalSP2D
-            : "Tanggal SP2D"
-        }`}
-        onChange={(e) => setFieldValue("tanggalSP2D", e.target.value)}
-        error={errors.tanggalSP2D && touched.tanggalSP2D}
-        value={values.tanggalSP2D ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.nomorSP2D && touched.nomorSP2D
-            ? errors.nomorSP2D
-            : "Nomor SP2D"
-        }`}
-        onChange={(e) => setFieldValue("nomorSP2D", e.target.value)}
-        error={errors.nomorSP2D && touched.nomorSP2D}
-        value={values.nomorSP2D ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.jumlahBarang && touched.jumlahBarang
-            ? errors.jumlahBarang
-            : "Jumlah Barang"
-        }`}
-        onChange={(e) => setFieldValue("jumlahBarang", e.target.value)}
-        error={errors.jumlahBarang && touched.jumlahBarang}
-        value={values.jumlahBarang ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.hargaSatuan && touched.hargaSatuan
-            ? errors.hargaSatuan
-            : "Harga Satuan"
-        }`}
-        onChange={(e) => setFieldValue("hargaSatuan", e.target.value)}
-        error={errors.hargaSatuan && touched.hargaSatuan}
-        value={values.hargaSatuan ?? ""}
-      />
-      <Input
-        className="md:col-span-1 col-span-2"
-        type="text"
-        color="orange"
-        label={`${
-          errors.jumlahHarga && touched.jumlahHarga
-            ? errors.jumlahHarga
-            : "Jumlah Harga"
-        }`}
-        onChange={(e) => setFieldValue("jumlahHarga", e.target.value)}
-        error={errors.jumlahHarga && touched.jumlahHarga}
-        value={values.jumlahHarga ?? ""}
-      />
-      <div className="flex gap-3 justify-end md:col-span-2 col-span-1">
+      <div className="md:col-span-2 col-span-2">
+        <Select
+          label={`${
+            errors.kualitas && touched.kualitas
+              ? errors.kualitas
+              : "Kualitas Barang"
+          }`}
+          value={values.kualitas}
+          error={touched.kualitas && errors.kualitas ? true : false}
+          animate={{
+            mount: { y: 0 },
+            unmount: { y: 25 },
+          }}
+        >
+          <Option value="baik">Baik</Option>
+          <Option value="rusak">Rusak</Option>
+        </Select>
+      </div>
+
+      <div className="md:col-span-2 col-span-2">
+        <Select
+          label={`${
+            errors.status && touched.status ? errors.status : "Status Barang"
+          }`}
+          value={values.status}
+          error={touched.status && errors.status ? true : false}
+          animate={{
+            mount: { y: 0 },
+            unmount: { y: 25 },
+          }}
+        >
+          <Option value="digunakan">Digunakan</Option>
+          <Option value="tidak-digunakan">Tidak Digunakan</Option>
+          <Option value="service">Service</Option>
+        </Select>
+      </div>
+
+      <div className="md:col-span-2 col-span-2">
+        <Select
+          label={`${
+            errors.barangKe && touched.barangKe
+              ? errors.barangKe
+              : "Barang Keberapa"
+          }`}
+          value={values.barangKe}
+          error={touched.barangKe && errors.barangKe ? true : false}
+          animate={{
+            mount: { y: 0 },
+            unmount: { y: 25 },
+          }}
+        >
+          {values._idBarang ? (
+            dataBarangKe?.map((item: any, i: number) => (
+              <Option key={i}>
+                {
+                  dataBarang.filter((data) => data._id === values._idBarang)[0]
+                    .jenisBarang
+                }{" "}
+                - {i + 1}
+              </Option>
+            ))
+          ) : (
+            <Option disabled>Silahkan pilih ID Barang dahulu</Option>
+          )}
+        </Select>
+      </div>
+
+      <div className="flex gap-3 justify-end md:col-span-9 col-span-1">
         <Button
           color="red"
           variant="text"
@@ -312,6 +258,8 @@ const KualitasForm = () => {
                 show: true,
               },
             });
+            files.current!.value = "";
+            files.current!.files = null;
             resetForm();
           }}
         >
