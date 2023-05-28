@@ -44,6 +44,16 @@ const KualitasForm = () => {
     }
   }, [values.dokumenPemegang, dataKualitasPilihan]);
 
+  const addBarangKe = (id: string | undefined) => {
+    console.log(id);
+    const data: barangInterface = barang.filter(
+      (item: barangInterface) => item._id === id
+    )[0];
+    for (let i = 1; i <= data.jumlahBarang; i++) {
+      setDataBarangKe((prev) => [...prev, i]);
+    }
+  };
+
   useEffect(() => {
     if (dataKualitasPilihan) {
       setFieldValue("_id", dataKualitasPilihan._id);
@@ -53,19 +63,13 @@ const KualitasForm = () => {
       setFieldValue("kualitas", dataKualitasPilihan.kualitas);
       setFieldValue("status", dataKualitasPilihan.status);
       setFieldValue("fetchType", "update");
+      findBarang(dataKualitasPilihan._idBarang);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataKualitasPilihan, setFieldValue]);
 
-  const addBarangKe = (id: string | undefined) => {
-    const data: barangInterface = barang.filter(
-      (item: barangInterface) => item._id === id
-    )[0];
-    for (let i = 1; i <= data.jumlahBarang; i++) {
-      setDataBarangKe((prev) => [...prev, i]);
-    }
-  };
-
   const findBarang = (input: string) => {
+    console.log(input);
     if (input.length > 0) {
       return setDataBarang(
         barang.filter(
@@ -79,7 +83,7 @@ const KualitasForm = () => {
   };
 
   return (
-    <div className="grid grid-cols-9 gap-3">
+    <div className="grid grid-cols-9 gap-3 mb-10">
       {dataKualitasPilihan && (
         <div className="bg-white col-span-9 shadow-xl rounded-lg px-3 py-2 uppercase text-center font-normal">
           <span className="bg-red-400 rounded-md px-2 text-white mx-1">
@@ -106,6 +110,16 @@ const KualitasForm = () => {
             setFieldValue("_idBarang", e);
             addBarangKe(e);
           }}
+          selected={(e) =>
+            `${
+              values._idBarang &&
+              dataBarang.filter((data) => data._id === values._idBarang)[0]._id
+            } - ${
+              values._idBarang &&
+              dataBarang.filter((data) => data._id === values._idBarang)[0]
+                .jenisBarang
+            }`
+          }
         >
           <Input
             type="text"
@@ -119,15 +133,6 @@ const KualitasForm = () => {
             </Option>
           ))}
         </Select>
-        <div className="absolute top-3 left-3 uppercase text-sm -z-10">
-          {values._idBarang &&
-            dataBarang.filter((item) => item._id === values._idBarang)[0]
-              ._id}{" "}
-          -{" "}
-          {values._idBarang &&
-            dataBarang.filter((data) => data._id === values._idBarang)[0]
-              .jenisBarang}
-        </div>
       </div>
 
       <div className="col-span-9">
@@ -316,6 +321,7 @@ const KualitasForm = () => {
               ? errors.barangKe
               : "Barang Keberapa"
           }`}
+          // disabled={!values._idBarang}
           value={values.barangKe}
           error={touched.barangKe && errors.barangKe ? true : false}
           animate={{
@@ -323,10 +329,22 @@ const KualitasForm = () => {
             unmount: { y: 25 },
           }}
           onChange={(e) => setFieldValue("barangKe", e)}
+          selected={(e, index) =>
+            `${
+              values.barangKe !== ""
+                ? `${
+                    values._idBarang &&
+                    dataBarang.filter(
+                      (data) => data._id === values._idBarang
+                    )[0].jenisBarang
+                  } - ${values.barangKe}`
+                : ""
+            }`
+          }
         >
           {values._idBarang ? (
             dataBarangKe?.map((item: any, i: number) => (
-              <Option value={`${i + 1}`} key={`BarangKe-${i}`}>
+              <Option value={item} key={i}>
                 {
                   dataBarang.filter((data) => data._id === values._idBarang)[0]
                     .jenisBarang
@@ -342,7 +360,7 @@ const KualitasForm = () => {
         </Select>
       </div>
 
-      <div className="flex gap-3 justify-end md:col-span-9 col-span-1">
+      <div className="flex gap-3 justify-end col-span-9">
         <Button
           color="red"
           variant="text"

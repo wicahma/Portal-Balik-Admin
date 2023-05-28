@@ -1,10 +1,14 @@
-import { reduxState } from "@/interfaces/reduxInterface";
+import {
+  reduxState,
+} from "@/interfaces/reduxInterface";
 import {
   Button,
+  Card,
   Dialog,
   DialogBody,
   DialogFooter,
   DialogHeader,
+  Input,
   Switch,
   Tooltip,
 } from "@material-tailwind/react";
@@ -367,7 +371,7 @@ const DataTable = (props: any) => {
 
   return (
     <>
-      <table className="min-w-max bg-white font-sans shadow-md rounded-lg my-6 w-full table-auto">
+      <table className="min-w-max bg-white font-sans rounded-2xl shadow-xl overflow-hidden mb-6 w-full table-auto">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
             {tableTitle.map((title: any, i: number) => (
@@ -409,7 +413,7 @@ const DataTable = (props: any) => {
                         setHandleOpenPreview(!handleOpenPreview);
                         setHandleDataPreview(data);
                       }}
-                      className="w-4 transform hover:text-red-500 hover:scale-110"
+                      className="w-4 transform hover:text-blue-500 hover:scale-110"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -471,7 +475,7 @@ const DataTable = (props: any) => {
                             });
                         }
                       }}
-                      className="w-4 transform hover:text-red-500 hover:scale-110"
+                      className="w-4 transform hover:text-blue-500 hover:scale-110"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -528,7 +532,7 @@ const DataTable = (props: any) => {
                         }
                         setHandleOpenEditImage(!handleOpenEditImage);
                       }}
-                      className="w-4 transform hover:text-red-500 hover:scale-110"
+                      className="w-4 transform hover:text-blue-500 hover:scale-110"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -559,7 +563,7 @@ const DataTable = (props: any) => {
                         setSelectedID(data._id);
                         setHandleOpenDelete(true);
                       }}
-                      className="w-4 transform hover:text-red-500 hover:scale-110"
+                      className="w-4 transform hover:text-blue-500 hover:scale-110"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -592,7 +596,10 @@ const DataTable = (props: any) => {
         <DialogBody divider>
           {Object.entries(dataPreview).map((data, i) =>
             data[0].includes("_id") ? (
-              <div key={i} className="flex bg-blue-400 uppercase rounded-md mb-3 px-3 gap-3 justify-center text-white">
+              <div
+                key={i}
+                className="flex bg-blue-400 uppercase rounded-md mb-3 px-3 gap-3 justify-center text-white"
+              >
                 <h4>{data[0]}:</h4>
                 <p>{data[1]}</p>
               </div>

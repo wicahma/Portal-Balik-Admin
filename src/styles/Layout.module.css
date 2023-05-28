@@ -1,33 +1,35 @@
 .adminCard {
-    padding: 0.8rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px 0 rgba(47, 47, 47, 0.2);
-    width: 13%;
-    background: #ffffff;
+  padding: 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(47, 47, 47, 0.2);
+  width: 13%;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.adminCard h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #00000082;
+}
+
+.adminCard h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #000000c1;
+}
+
+@media screen and (max-width: 1140px) {
+  .adminCard {
+    width: 90%;
   }
-  
-  .header {
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-  }
-  
-  .adminCard h3 {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #00000082;
-  }
-  
-  .adminCard h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #000000c1;
-  }
-  
-  @media screen and (max-width: 1140px) {
-    .adminCard {
-      width: 90%;
-    }
-  }
-  
+}

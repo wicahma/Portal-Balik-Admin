@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import BarangForm from "./forms/BarangForm";
 import KualitasForm from "./forms/KualitasForm";
 import {
+  barangInterface,
   initBarang,
   initKualitas,
   reduxState,
@@ -20,11 +21,16 @@ import {
   barangValidationSchema,
   kualitasValidationSchema,
 } from "@/interfaces/adminPageInterface";
+import Finder from "./finder/Finder";
 
 const Product = (props: any) => {
-  const dispatch = useDispatch();
-  const barang = useSelector((state: reduxState) => state.item.dataBarang);
-  const kualitas = useSelector((state: reduxState) => state.item.dataKualitas);
+  const dispatch = useDispatch(),
+    barang = useSelector((state: reduxState) => state.item.dataBarang),
+    [filteredBarang, setFilteredBarang] = React.useState<barangInterface[]>([]),
+    kualitas = useSelector((state: reduxState) => state.item.dataKualitas),
+    [filteredKualitas, setFilteredKualitas] = React.useState<barangInterface[]>(
+      []
+    );
   const data = [
     {
       label: "Barang",
@@ -50,6 +56,11 @@ const Product = (props: any) => {
           >
             <Form>
               <BarangForm />
+              <Finder
+                initData={barang}
+                identifier="barang"
+                resultCallback={(result) => setFilteredBarang(result)}
+              />
               <div className="w-full overflow-x-auto">
                 <DataTable
                   identifier="barang"
@@ -68,7 +79,7 @@ const Product = (props: any) => {
                     "Jumlah Harga",
                     "Total Belanja",
                   ]}
-                  tableData={barang}
+                  tableData={filteredBarang}
                 />
               </div>
             </Form>
@@ -87,18 +98,23 @@ const Product = (props: any) => {
             validateOnChange
             validateOnMount
             onSubmit={async (values, { setSubmitting }) => {
+              // dispatch({
+              //   type: "main/setLoading",
+              //   payload: true,
+              // });
               setSubmitting(true);
-              dispatch({
-                type: "main/setLoading",
-                payload: true,
-              });
-              setSubmitting(true);
+              console.log(values);
               //   fetchProduk("outbond", values, values._id);
               return false;
             }}
           >
             <Form>
               <KualitasForm />
+              <Finder
+                initData={kualitas}
+                identifier="kualitas"
+                resultCallback={(result) => setFilteredKualitas(result)}
+              />
               <div className="w-full overflow-x-auto">
                 <DataTable
                   identifier="kualitas"
@@ -112,7 +128,7 @@ const Product = (props: any) => {
                     "Status",
                     "Barang Ke",
                   ]}
-                  tableData={kualitas}
+                  tableData={filteredKualitas}
                 />
               </div>
             </Form>
@@ -124,7 +140,7 @@ const Product = (props: any) => {
 
   return (
     <div className=" container mx-auto block md:p-10 py-10 px-2">
-      <Tabs value="kualitas" className="max-w-full">
+      <Tabs value="barang" className="max-w-full">
         <TabsHeader className="">
           {data.map(({ label, value }) => (
             <Tab key={value} value={value}>
