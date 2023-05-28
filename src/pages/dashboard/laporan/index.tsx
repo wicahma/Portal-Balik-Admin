@@ -1,6 +1,9 @@
 import Layout from "@/components/Layout";
+import { kualitasInterface, reduxState } from "@/interfaces/reduxInterface";
 import { Button, Input } from "@material-tailwind/react";
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import xlsx, { IContent, IJsonSheet } from "json-as-xlsx";
 
 interface dateRange {
   start: string;
@@ -8,7 +11,10 @@ interface dateRange {
 }
 
 const Index = (props: any) => {
-  const [dateRangeMonth, setDateRangeMonth] = React.useState<dateRange>({
+  const dataKualitas = useSelector(
+      (state: reduxState) => state.item.dataKualitas
+    ),
+    [dateRangeMonth, setDateRangeMonth] = React.useState<dateRange>({
       start: "",
       end: "",
     }),
@@ -16,6 +22,107 @@ const Index = (props: any) => {
       start: "",
       end: "",
     });
+
+  const generateXlsx = async (type: string) => {
+    let newDataKualitas: any = [];
+    let datas: any = dataKualitas;
+    console.log(datas);
+    if (type === "month") {
+      newDataKualitas = await dataKualitas.filter((item: kualitasInterface) => {
+        const date = new Date(item.updateAt);
+        return (
+          date >= new Date(dateRangeMonth.start) &&
+          date <= new Date(dateRangeMonth.end)
+        );
+      });
+    } else {
+      newDataKualitas = await dataKualitas.filter((item) => {
+        const date = new Date(item.updateAt);
+        return (
+          date >= new Date(dateRangeWeek.start) &&
+          date <= new Date(dateRangeWeek.end)
+        );
+      });
+    }
+    const dataJSON: IJsonSheet[] = [
+      {
+        sheet: "Riwayat Kualitas",
+        columns: [
+          { value: "_id", label: "ID Riwayat" },
+          { value: "_idBarang", label: "ID Barang" },
+          { value: "gambar", label: "Gambar" },
+          { value: "namaPemegang", label: "Nama Pemegang" },
+          { value: "dokumenPemegang", label: "Dokumen Pemegang" },
+          { value: "kondisi", label: "Kondisi" },
+          { value: "status", label: "Status" },
+          { value: "barangKe", label: "List Barang Ke" },
+          { value: "updateAt", label: "Pembaruan Terakhir" },
+        ],
+        content: datas,
+      },
+      {
+        sheet: "Riwayat Rusak",
+        columns: [
+          { value: "_id", label: "ID Riwayat" },
+          { value: "_idBarang", label: "ID Barang" },
+          { value: "gambar", label: "Gambar" },
+          { value: "namaPemegang", label: "Nama Pemegang" },
+          { value: "dokumenPemegang", label: "Dokumen Pemegang" },
+          { value: "kondisi", label: "Kondisi" },
+          { value: "status", label: "Status" },
+          { value: "barangKe", label: "List Barang Ke" },
+          { value: "updateAt", label: "Pembaruan Terakhir" },
+        ],
+        content: datas.filter((data: any) => data.kondisi === "rusak"),
+      },
+      {
+        sheet: "Riwayat Baik",
+        columns: [
+          { value: "_id", label: "ID Riwayat" },
+          { value: "_idBarang", label: "ID Barang" },
+          { value: "gambar", label: "Gambar" },
+          { value: "namaPemegang", label: "Nama Pemegang" },
+          { value: "dokumenPemegang", label: "Dokumen Pemegang" },
+          { value: "kondisi", label: "Kondisi" },
+          { value: "status", label: "Status" },
+          { value: "barangKe", label: "List Barang Ke" },
+          { value: "updateAt", label: "Pembaruan Terakhir" },
+        ],
+        content: datas.filter((data: any) => data.kondisi === "baik"),
+      },
+      {
+        sheet: "Riwayat Service",
+        columns: [
+          { value: "_id", label: "ID Riwayat" },
+          { value: "_idBarang", label: "ID Barang" },
+          { value: "gambar", label: "Gambar" },
+          { value: "namaPemegang", label: "Nama Pemegang" },
+          { value: "dokumenPemegang", label: "Dokumen Pemegang" },
+          { value: "kondisi", label: "Kondisi" },
+          { value: "status", label: "Status" },
+          { value: "barangKe", label: "List Barang Ke" },
+          { value: "updateAt", label: "Pembaruan Terakhir" },
+        ],
+        content: datas.filter((data: any) => data.kondisi === "service"),
+      },
+    ];
+    // newDataKualitas.map((item: kualitasInterface) => {
+    //     return {
+    //       tanggal: item.updateAt,
+    //       kondisi: item.kondisi,
+    //       idBarang: item._idBarang,
+    //     };
+    //   }),
+    const settings = {
+      fileName: "Riwayat Kualitas", // Name of the resulting spreadsheet
+      extraLength: 3, // A bigger number means that columns will be wider
+      writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+      writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+      RTL: false, // Display the columns from right-to-left (the default value is false)
+    };
+
+    return xlsx(dataJSON, settings);
+  };
 
   useEffect(() => {
     const start = new Date(dateRangeMonth.start),
@@ -68,6 +175,7 @@ const Index = (props: any) => {
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     className="w-4 aspect-square"
+                    onClick={() => generateXlsx("month")}
                   >
                     <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
                     <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />

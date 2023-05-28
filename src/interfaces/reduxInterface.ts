@@ -51,6 +51,7 @@ export interface kualitasInterface {
   kondisi: "baik" | "rusak" | "service" | "";
   status: "digunakan" | "tidak-digunakan" | "";
   barangKe: string;
+  updateAt: string;
   fetchType?: "create" | "update";
 }
 
@@ -63,6 +64,7 @@ export const initKualitas: kualitasInterface = {
   kondisi: "",
   status: "",
   barangKe: "",
+  updateAt: "",
   fetchType: "create",
 };
 
