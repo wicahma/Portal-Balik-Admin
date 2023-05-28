@@ -5,6 +5,7 @@ import {
 } from "@/interfaces/reduxInterface";
 import {
   Button,
+  Checkbox,
   Input,
   Option,
   Select,
@@ -19,11 +20,16 @@ const KualitasForm = () => {
   const dataKualitasPilihan: kualitasInterface | undefined | null = useSelector(
       (state: reduxState) => state.item.kualitas
     ),
+    dataKualitas: kualitasInterface[] | undefined | null = useSelector(
+      (state: reduxState) => state.item.dataKualitas
+    ),
     barang: barangInterface[] = useSelector(
       (state: reduxState) => state.item.dataBarang
     ),
+    [isHstoryExist, setIsHstoryExist] = React.useState<boolean>(false),
     [dataBarang, setDataBarang] = React.useState<barangInterface[]>(barang),
     [dataBarangKe, setDataBarangKe] = React.useState<number[]>([]),
+    [showInput, setShowInput] = React.useState<boolean>(false),
     { setFieldValue, touched, isSubmitting, errors, values, resetForm }: any =
       useFormikContext(),
     dispatch = useDispatch(),
@@ -45,10 +51,10 @@ const KualitasForm = () => {
   }, [values.dokumenPemegang, dataKualitasPilihan]);
 
   const addBarangKe = (id: string | undefined) => {
-    console.log(id);
     const data: barangInterface = barang.filter(
       (item: barangInterface) => item._id === id
     )[0];
+    setDataBarangKe([]);
     for (let i = 1; i <= data.jumlahBarang; i++) {
       setDataBarangKe((prev) => [...prev, i]);
     }
@@ -60,13 +66,30 @@ const KualitasForm = () => {
       setFieldValue("_idBarang", dataKualitasPilihan._idBarang);
       setFieldValue("namaPemegang", dataKualitasPilihan.namaPemegang);
       setFieldValue("barangKe", dataKualitasPilihan.barangKe);
-      setFieldValue("kualitas", dataKualitasPilihan.kualitas);
+      setFieldValue("kondisi", dataKualitasPilihan.kondisi);
       setFieldValue("status", dataKualitasPilihan.status);
       setFieldValue("fetchType", "update");
       findBarang(dataKualitasPilihan._idBarang);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataKualitasPilihan, setFieldValue]);
+
+  useEffect(() => {
+    if (values.barangKe) {
+      if (
+        dataKualitas.filter(
+          (data) =>
+            data.barangKe === values.barangKe.toString() &&
+            data._idBarang === values._idBarang.toString()
+        ).length > 0
+      ) {
+        setIsHstoryExist(true);
+      } else {
+        setIsHstoryExist(false);
+      }
+      setShowInput(true);
+    }
+  }, [values.barangKe, values._idBarang, dataKualitas]);
 
   const findBarang = (input: string) => {
     console.log(input);
@@ -107,7 +130,8 @@ const KualitasForm = () => {
           error={touched._idBarang && errors._idBarang ? true : false}
           onMouseUp={() => setDataBarang(barang)}
           onChange={(e) => {
-            setFieldValue("_idBarang", e);
+            setFieldValue("_idBarang", e?.toString());
+            setFieldValue("barangKe", "");
             addBarangKe(e);
           }}
           selected={(e) =>
@@ -152,12 +176,29 @@ const KualitasForm = () => {
       </div>
 
       <div className="flex justify-between gap-5 flex-wrap md:flex-nowrap md:col-span-3 col-span-9 row-span-3">
-        <div className="border rounded-lg p-5 flex justify-center items-center gap-3 flex-col border-blue-gray-200 w-full border-dashed">
-          <div className="space-y-2">
+        <div className="border rounded-lg p-5 flex justify-center items-center gap-3 flex-col border-blue-gray-200 w-full relative border-dashed">
+          <div
+            className={`h-full text-black/70 rounded-lg z-10 bg-black/10 w-full flex justify-center items-center ${
+              showInput ? "hidden" : "absolute"
+            }`}
+          >
+            <p className="block">
+              Silahkan pilih barang keberapa terlebih dahulu
+            </p>
+          </div>
+          <div className={`space-y-2 ${showInput ? "blur-0" : "blur"}`}>
             {dataKualitasPilihan?.fetchType !== "update" ? (
               <>
                 <h3 className="text-sm font-semibold ">Dokumen Pemegang</h3>
-                <div className="flex justify-start items-start gap-5">
+                {isHstoryExist && (
+                  <Checkbox
+                    labelProps={{
+                      className: "text-xs font-normal",
+                    }}
+                    label="Apakah dokumen pemegang sama dengan dokumen sebelumnya?"
+                  />
+                )}
+                <div className="flex  justify-start items-start gap-5">
                   <input
                     type="file"
                     ref={files}
@@ -220,8 +261,17 @@ const KualitasForm = () => {
         </div>
       </div>
       <div className="flex justify-between gap-5 flex-wrap md:flex-nowrap md:col-span-3 col-span-9 row-span-3">
-        <div className="border rounded-lg p-5 flex justify-center items-center gap-3 flex-col border-blue-gray-200 w-full border-dashed">
-          <div className="space-y-2">
+        <div className="border rounded-lg p-5 flex justify-center items-center gap-3 flex-col border-blue-gray-200 w-full relative border-dashed">
+          <div
+            className={`h-full text-black/70 rounded-lg z-10 bg-black/10 w-full flex justify-center items-center ${
+              showInput ? "hidden" : "absolute"
+            }`}
+          >
+            <p className="block">
+              Silahkan pilih barang keberapa terlebih dahulu
+            </p>
+          </div>
+          <div className={`space-y-2 ${showInput ? "blur-0" : "blur"}`}>
             <h3 className="text-sm font-semibold ">Foto Kualitas Barang</h3>
             <div className="flex justify-start items-start gap-5">
               <input
@@ -279,50 +329,11 @@ const KualitasForm = () => {
       <div className="md:col-span-3 col-span-9">
         <Select
           label={`${
-            errors.kualitas && touched.kualitas
-              ? errors.kualitas
-              : "Kualitas Barang"
-          }`}
-          value={values.kualitas}
-          error={touched.kualitas && errors.kualitas ? true : false}
-          animate={{
-            mount: { y: 0 },
-            unmount: { y: 25 },
-          }}
-          onChange={(e) => setFieldValue("kualitas", e)}
-        >
-          <Option value="baik">Baik</Option>
-          <Option value="rusak">Rusak</Option>
-        </Select>
-      </div>
-
-      <div className="md:col-span-3 col-span-9">
-        <Select
-          label={`${
-            errors.status && touched.status ? errors.status : "Status Barang"
-          }`}
-          value={values.status}
-          error={touched.status && errors.status ? true : false}
-          animate={{
-            mount: { y: 0 },
-            unmount: { y: 25 },
-          }}
-          onChange={(e) => setFieldValue("status", e)}
-        >
-          <Option value="digunakan">Digunakan</Option>
-          <Option value="tidak-digunakan">Tidak Digunakan</Option>
-          <Option value="service">Service</Option>
-        </Select>
-      </div>
-      <div className="md:col-span-3 col-span-9">
-        <Select
-          label={`${
             errors.barangKe && touched.barangKe
               ? errors.barangKe
               : "Barang Keberapa"
           }`}
-          // disabled={!values._idBarang}
-          value={values.barangKe}
+          value={values.barangKe.toString()}
           error={touched.barangKe && errors.barangKe ? true : false}
           animate={{
             mount: { y: 0 },
@@ -344,7 +355,7 @@ const KualitasForm = () => {
         >
           {values._idBarang ? (
             dataBarangKe?.map((item: any, i: number) => (
-              <Option value={item} key={i}>
+              <Option value={item.toString()} key={i}>
                 {
                   dataBarang.filter((data) => data._id === values._idBarang)[0]
                     .jenisBarang
@@ -357,6 +368,44 @@ const KualitasForm = () => {
               Silahkan pilih ID Barang dahulu
             </Option>
           )}
+        </Select>
+      </div>
+      <div className="md:col-span-3 col-span-9">
+        <Select
+          label={`${
+            errors.kondisi && touched.kondisi
+              ? errors.kondisi
+              : "Kondisi Barang"
+          }`}
+          value={values.kondisi}
+          error={touched.kondisi && errors.kondisi ? true : false}
+          animate={{
+            mount: { y: 0 },
+            unmount: { y: 25 },
+          }}
+          onChange={(e) => setFieldValue("kondisi", e)}
+        >
+          <Option value="baik">Baik</Option>
+          <Option value="rusak">Rusak</Option>
+          <Option value="service">Service</Option>
+        </Select>
+      </div>
+
+      <div className="md:col-span-3 col-span-9">
+        <Select
+          label={`${
+            errors.status && touched.status ? errors.status : "Status Barang"
+          }`}
+          value={values.status}
+          error={touched.status && errors.status ? true : false}
+          animate={{
+            mount: { y: 0 },
+            unmount: { y: 25 },
+          }}
+          onChange={(e) => setFieldValue("status", e)}
+        >
+          <Option value="digunakan">Digunakan</Option>
+          <Option value="tidak-digunakan">Tidak Digunakan</Option>
         </Select>
       </div>
 
@@ -379,6 +428,7 @@ const KualitasForm = () => {
             gambar.current!.value = "";
             gambar.current!.files = null;
             setDataBarangKe([]);
+            setShowInput(false);
             resetForm();
           }}
         >
@@ -403,7 +453,7 @@ const KualitasForm = () => {
           type="submit"
           disabled={isSubmitting}
         >
-          {dataKualitasPilihan ? "Update Barang" : "Tambah Barang"}
+          {dataKualitasPilihan ? "Tambah Riwayat" : "Tambah Data"}
         </Button>
       </div>
     </div>

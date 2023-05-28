@@ -30,7 +30,6 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
   const [product, setDataProduct] = React.useState<
       any | barangInterface | kualitasInterface
     >(initData),
-    [barangFilter, setBarangFilter] = React.useState<Object>({}),
     [spmFilter, setSpmFilter] = React.useState<boolean>(false),
     [spkFilter, setSpkFilter] = React.useState<boolean>(false),
     [sp2dFilter, setSp2dFilter] = React.useState<boolean>(false),
@@ -56,27 +55,21 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
     >("");
 
   const findProduct = (input: string) => {
-    if (input.length > 0) {
+    if (input.length !== 0) {
       return setDataProduct(
         product.filter(
           (item: barangInterface | kualitasInterface | any) =>
             item._id.includes(input) ||
             (item.jenisBarang &&
               item.jenisBarang.toLowerCase().includes(input.toLowerCase())) ||
+            (item.upb &&
+              item.upb.toLowerCase().includes(input.toLowerCase())) ||
             (item._idBarang &&
               item._idBarang.toLowerCase().includes(input.toLowerCase())) ||
             (item.namaPemegang &&
               item.namaPemegang.toLowerCase().includes(input.toLowerCase())) ||
             (item.dokumenPemegang &&
-              item.dokumenPemegang
-                .toLowerCase()
-                .includes(input.toLowerCase())) ||
-            (item.nomorSPK &&
-              item.nomorSPK.toLowerCase().includes(input.toLowerCase())) ||
-            (item.nomorSPM &&
-              item.nomorSPM.toLowerCase().includes(input.toLowerCase())) ||
-            (item.nomorSP2D &&
-              item.nomorSP2D.toLowerCase().includes(input.toLowerCase()))
+              item.dokumenPemegang.toLowerCase().includes(input.toLowerCase()))
         )
       );
     }
@@ -117,7 +110,7 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
         setDataProduct(
           product.filter(
             (item: kualitasInterface) =>
-              (kualitasFilter ? item.kualitas === kualitasFilterValue : true) &&
+              (kualitasFilter ? item.kondisi === kualitasFilterValue : true) &&
               (statusFilter ? item.status === statusFilterValue : true)
           )
         );
@@ -198,6 +191,7 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
                   >
                     <Option value="baik">Baik</Option>
                     <Option value="rusak">Rusak</Option>
+                    <Option value="service">Service</Option>
                   </Select>
                 </div>
               </div>
@@ -371,9 +365,9 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
                   className="w-5 aspect-square"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </Button>
@@ -408,9 +402,9 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
                   className="w-5 aspect-square"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </Button>

@@ -124,7 +124,8 @@ const Product = (props: any) => {
                     "Gambar",
                     "Nama Pemegang",
                     "Dokumen Pemegang",
-                    "Kualitas",
+                    "Kondisi",
+                    "Tanggal Pengecekan",
                     "Status",
                     "Barang Ke",
                   ]}
@@ -139,7 +140,7 @@ const Product = (props: any) => {
   ];
 
   return (
-    <div className=" container mx-auto block md:p-10 py-10 px-2">
+    <div className="container mx-auto block md:p-10 py-10 px-2">
       <Tabs value="barang" className="max-w-full">
         <TabsHeader className="">
           {data.map(({ label, value }) => (

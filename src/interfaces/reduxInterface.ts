@@ -48,8 +48,8 @@ export interface kualitasInterface {
   gambar: string;
   namaPemegang: string;
   dokumenPemegang: [File] | null;
-  kualitas: string;
-  status: string;
+  kondisi: "baik" | "rusak" | "service" | "";
+  status: "digunakan" | "tidak-digunakan" | "";
   barangKe: string;
   fetchType?: "create" | "update";
 }
@@ -60,7 +60,7 @@ export const initKualitas: kualitasInterface = {
   gambar: "",
   namaPemegang: "",
   dokumenPemegang: null,
-  kualitas: "",
+  kondisi: "",
   status: "",
   barangKe: "",
   fetchType: "create",

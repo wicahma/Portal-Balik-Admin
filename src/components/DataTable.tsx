@@ -1,6 +1,4 @@
-import {
-  reduxState,
-} from "@/interfaces/reduxInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
 import {
   Button,
   Card,
@@ -437,118 +435,122 @@ const DataTable = (props: any) => {
                     </div>
                   </Tooltip>
                   {/* //NOTE - Edit Kolom */}
-                  <Tooltip
-                    content={"Edit kolom ini"}
-                    animate={{
-                      mount: { scale: 1, y: 0 },
-                      unmount: { scale: 0, y: 25 },
-                    }}
-                    className="bg-white text-gray-700 shadow-xl"
-                  >
-                    <div
-                      onClick={() => {
-                        switch (identifier) {
-                          case "barang":
-                            dispatch({
-                              type: "item/setBarang",
-                              payload: data,
-                            });
-                            break;
-                          case "kualitas":
-                            dispatch({
-                              type: "item/setKualitas",
-                              payload: data,
-                            });
-                            break;
-                          default:
-                            dispatch({
-                              type: "main/setLoading",
-                              payload: false,
-                            });
-                            return dispatch({
-                              type: "main/setAlert",
-                              payload: {
-                                type: "info",
-                                message: "Fitur edit gambar belum diatur!",
-                                show: true,
-                              },
-                            });
-                        }
+                  {identifier === "barang" && (
+                    <Tooltip
+                      content={"Edit kolom ini"}
+                      animate={{
+                        mount: { scale: 1, y: 0 },
+                        unmount: { scale: 0, y: 25 },
                       }}
-                      className="w-4 transform hover:text-blue-500 hover:scale-110"
+                      className="bg-white text-gray-700 shadow-xl"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                      <div
+                        onClick={() => {
+                          switch (identifier) {
+                            case "barang":
+                              dispatch({
+                                type: "item/setBarang",
+                                payload: data,
+                              });
+                              break;
+                            case "kualitas":
+                              dispatch({
+                                type: "item/setKualitas",
+                                payload: data,
+                              });
+                              break;
+                            default:
+                              dispatch({
+                                type: "main/setLoading",
+                                payload: false,
+                              });
+                              return dispatch({
+                                type: "main/setAlert",
+                                payload: {
+                                  type: "info",
+                                  message: "Fitur edit gambar belum diatur!",
+                                  show: true,
+                                },
+                              });
+                          }
+                        }}
+                        className="w-4 transform hover:text-blue-500 hover:scale-110"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
-                    </div>
-                  </Tooltip>
-                  {/* //NOTE - Update Gambar */}
-                  <Tooltip
-                    content={"Update File"}
-                    animate={{
-                      mount: { scale: 1, y: 0 },
-                      unmount: { scale: 0, y: 25 },
-                    }}
-                    className="bg-white text-gray-700 shadow-xl"
-                  >
-                    <div
-                      onClick={() => {
-                        switch (identifier) {
-                          //   case "car":
-                          //     dispatch({
-                          //       type: "produk/setSelectedDataMobil",
-                          //       payload: data,
-                          //     });
-                          //     break;
-                          //   case "wisata":
-                          //     getDataProduk(data, identifier);
-                          //     break;
-                          //   case "outbond":
-                          //     getDataProduk(data, identifier);
-                          //     break;
-                          default:
-                            dispatch({
-                              type: "main/setLoading",
-                              payload: false,
-                            });
-                            return dispatch({
-                              type: "main/setAlert",
-                              payload: {
-                                type: "info",
-                                message: "Fitur edit gambar belum diatur!",
-                                show: true,
-                              },
-                            });
-                        }
-                        setHandleOpenEditImage(!handleOpenEditImage);
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                          />
+                        </svg>
+                      </div>
+                    </Tooltip>
+                  )}
+                  {/* //NOTE - Update File */}
+                  {identifier === "kualitas" && (
+                    <Tooltip
+                      content={"Update File"}
+                      animate={{
+                        mount: { scale: 1, y: 0 },
+                        unmount: { scale: 0, y: 25 },
                       }}
-                      className="w-4 transform hover:text-blue-500 hover:scale-110"
+                      className="bg-white text-gray-700 shadow-xl"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
+                      <div
+                        onClick={() => {
+                          switch (identifier) {
+                            //   case "car":
+                            //     dispatch({
+                            //       type: "produk/setSelectedDataMobil",
+                            //       payload: data,
+                            //     });
+                            //     break;
+                            //   case "wisata":
+                            //     getDataProduk(data, identifier);
+                            //     break;
+                            //   case "outbond":
+                            //     getDataProduk(data, identifier);
+                            //     break;
+                            default:
+                              dispatch({
+                                type: "main/setLoading",
+                                payload: false,
+                              });
+                              return dispatch({
+                                type: "main/setAlert",
+                                payload: {
+                                  type: "info",
+                                  message: "Fitur edit gambar belum diatur!",
+                                  show: true,
+                                },
+                              });
+                          }
+                          setHandleOpenEditImage(!handleOpenEditImage);
+                        }}
+                        className="w-4 transform hover:text-blue-500 hover:scale-110"
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                        />
-                      </svg>
-                    </div>
-                  </Tooltip>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                          />
+                        </svg>
+                      </div>
+                    </Tooltip>
+                  )}
                   {/* //NOTE - Hapus Data */}
                   <Tooltip
                     content={"Hapus data kolom ini"}
