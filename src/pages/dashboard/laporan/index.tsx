@@ -18,31 +18,50 @@ const Index = (props: any) => {
       start: "",
       end: "",
     }),
+    [errorMonth, setErrorMonth] = React.useState<string>(""),
+    [errorWeek, setErrorWeek] = React.useState<string>(""),
     [dateRangeWeek, setDateRangeWeek] = React.useState<dateRange>({
       start: "",
       end: "",
     });
 
-  const generateXlsx = async (type: string) => {
+  const generateXlsx = async (type: string, downloadAll: boolean) => {
     let newDataKualitas: any = [];
-    let datas: any = dataKualitas;
-    console.log(datas);
+    const thisDay = new Date();
+    // let datas: any = dataKualitas;
+    // console.log(datas);
     if (type === "month") {
-      newDataKualitas = await dataKualitas.filter((item: kualitasInterface) => {
-        const date = new Date(item.updateAt);
-        return (
-          date >= new Date(dateRangeMonth.start) &&
-          date <= new Date(dateRangeMonth.end)
-        );
-      });
+      !downloadAll
+        ? (newDataKualitas = dataKualitas.filter((item: kualitasInterface) => {
+            const date = new Date(item.updateAt);
+            return (
+              date >= new Date(dateRangeMonth.start) &&
+              date <= new Date(dateRangeMonth.end)
+            );
+          }))
+        : (newDataKualitas = dataKualitas.filter((item: kualitasInterface) => {
+            const date = new Date(item.updateAt);
+            return (
+              date >= new Date(date.getFullYear(), date.getMonth(), 1) &&
+              date <= new Date(date.getFullYear(), date.getMonth() + 1, 0)
+            );
+          }));
     } else {
-      newDataKualitas = await dataKualitas.filter((item) => {
-        const date = new Date(item.updateAt);
-        return (
-          date >= new Date(dateRangeWeek.start) &&
-          date <= new Date(dateRangeWeek.end)
-        );
-      });
+      !downloadAll
+        ? (newDataKualitas = dataKualitas.filter((item) => {
+            const date = new Date(item.updateAt);
+            return (
+              date >= new Date(dateRangeWeek.start) &&
+              date <= new Date(dateRangeWeek.end)
+            );
+          }))
+        : (newDataKualitas = dataKualitas.filter((item) => {
+            const date = new Date(item.updateAt);
+            return (
+              date >= new Date(thisDay.getDate() - thisDay.getDay()) &&
+              date <= new Date(thisDay.getDate() - thisDay.getDay() + 6)
+            );
+          }));
     }
     const dataJSON: IJsonSheet[] = [
       {
@@ -58,7 +77,7 @@ const Index = (props: any) => {
           { value: "barangKe", label: "List Barang Ke" },
           { value: "updateAt", label: "Pembaruan Terakhir" },
         ],
-        content: datas,
+        content: newDataKualitas,
       },
       {
         sheet: "Riwayat Rusak",
@@ -73,7 +92,9 @@ const Index = (props: any) => {
           { value: "barangKe", label: "List Barang Ke" },
           { value: "updateAt", label: "Pembaruan Terakhir" },
         ],
-        content: datas.filter((data: any) => data.kondisi === "rusak"),
+        content: newDataKualitas.filter(
+          (data: any) => data.kondisi === "rusak"
+        ),
       },
       {
         sheet: "Riwayat Baik",
@@ -88,7 +109,7 @@ const Index = (props: any) => {
           { value: "barangKe", label: "List Barang Ke" },
           { value: "updateAt", label: "Pembaruan Terakhir" },
         ],
-        content: datas.filter((data: any) => data.kondisi === "baik"),
+        content: newDataKualitas.filter((data: any) => data.kondisi === "baik"),
       },
       {
         sheet: "Riwayat Service",
@@ -103,16 +124,12 @@ const Index = (props: any) => {
           { value: "barangKe", label: "List Barang Ke" },
           { value: "updateAt", label: "Pembaruan Terakhir" },
         ],
-        content: datas.filter((data: any) => data.kondisi === "service"),
+        content: newDataKualitas.filter(
+          (data: any) => data.kondisi === "service"
+        ),
       },
     ];
-    // newDataKualitas.map((item: kualitasInterface) => {
-    //     return {
-    //       tanggal: item.updateAt,
-    //       kondisi: item.kondisi,
-    //       idBarang: item._idBarang,
-    //     };
-    //   }),
+
     const settings = {
       fileName: "Riwayat Kualitas", // Name of the resulting spreadsheet
       extraLength: 3, // A bigger number means that columns will be wider
@@ -175,7 +192,7 @@ const Index = (props: any) => {
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     className="w-4 aspect-square"
-                    onClick={() => generateXlsx("month")}
+                    onClick={() => generateXlsx("month", true)}
                   >
                     <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
                     <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
@@ -189,18 +206,21 @@ const Index = (props: any) => {
               <div className="flex gap-2">
                 <Input
                   value={dateRangeMonth.start}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    setErrorMonth("");
                     setDateRangeMonth({
                       ...dateRangeMonth,
                       start: e.target.value,
-                    })
-                  }
-                  label="Tanggal awal"
+                    });
+                  }}
+                  error={errorMonth !== "" ? true : false}
+                  label={`${errorMonth !== "" ? errorMonth : "Tanggal awal"}`}
                   type="date"
                 />
                 <Button
                   className="p-2 aspect-square"
                   color="red"
+                  disabled={dateRangeMonth.start === ""}
                   onClick={() =>
                     setDateRangeMonth({
                       start: "",
@@ -232,6 +252,7 @@ const Index = (props: any) => {
                     color="green"
                     className="p-2 flex gap-3 items-center"
                     size="sm"
+                    onClick={() => generateXlsx("month", false)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -253,7 +274,12 @@ const Index = (props: any) => {
             <div className="bg-gray-200 rounded-xl px-5 py-3 space-y-4">
               <p>
                 Download laporan minggu ini{" "}
-                <Button color="green" className="p-2" size="sm">
+                <Button
+                  color="green"
+                  className="p-2"
+                  size="sm"
+                  onClick={() => generateXlsx("week", true)}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
@@ -272,18 +298,21 @@ const Index = (props: any) => {
               <div className="flex gap-2">
                 <Input
                   value={dateRangeWeek.start}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    setErrorWeek("");
                     setDateRangeWeek({
                       ...dateRangeWeek,
                       start: e.target.value,
-                    })
-                  }
-                  label="Tanggal awal"
+                    });
+                  }}
+                  error={errorWeek !== "" ? true : false}
+                  label={`${errorWeek !== "" ? errorMonth : "Tanggal awal"}`}
                   type="date"
                 />
                 <Button
                   className="p-2 aspect-square"
                   color="red"
+                  disabled={dateRangeWeek.start === ""}
                   onClick={() =>
                     setDateRangeWeek({
                       start: "",
@@ -315,6 +344,7 @@ const Index = (props: any) => {
                     color="green"
                     className="p-2 flex gap-3 items-center"
                     size="sm"
+                    onClick={() => generateXlsx("week", false)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
