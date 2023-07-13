@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import { wrapper } from "@/redux/store";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
@@ -11,6 +12,11 @@ import { Button, Checkbox, Input } from "@material-tailwind/react";
 import Alert from "@/components/Alert";
 import * as Yup from "yup";
 import Loading from "@/components/Loading";
+import { getSession, signIn } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import { GetServerSidePropsContext } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 interface adminProps {
   email: string | null;
@@ -23,6 +29,50 @@ const adminValidation = Yup.object().shape({
     .required("Email harus diisi !"),
   password: Yup.string().required("Password harus diisi !"),
 });
+
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   (store) =>
+//     async ({ req, res, ...etc }) => {
+//       const session = await getServerSession(req, res, authOptions);
+//       console.log("\nsessionnyah");
+//       console.log(session);
+
+//       if (session) {
+//         return {
+//           redirect: {
+//             destination: "/profile",
+//             permananet: false,
+//           },
+//         };
+//       }
+
+//       return {
+//         props: { session },
+//       };
+//     }
+// );
+
+export const getServerSideProps = async ({
+  req,
+  res,
+}: GetServerSidePropsContext) => {
+  const session = await getServerSession(req, res, authOptions);
+  console.log("\nsessionnyah");
+  console.log(session);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permananet: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};
 
 const Home = (props: any) => {
   const router = useRouter(),
@@ -50,13 +100,16 @@ const Home = (props: any) => {
         type: "success",
       },
     });
-    setTimeout(() => {
-      dispatch({
-        type: "main/setLoading",
-        payload: false,
-      });
-      router.push("/dashboard");
-    }, 3000);
+    signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      callbackUrl: "/dashboard",
+      
+    });
+    dispatch({
+      type: "main/setLoading",
+      payload: false,
+    });
   };
 
   return (

@@ -13,6 +13,12 @@ const initialState: Main = {
   },
   isLoading: false,
   token: "",
+  user: {
+    id: "",
+    name: "",
+    email: "",
+    image: "",
+  },
 };
 
 export const mainSlice = createSlice({
@@ -30,6 +36,10 @@ export const mainSlice = createSlice({
     setToken(state, action) {
       state.token = action.payload;
     },
+
+    setUser(state, action) {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(hydrate, (state, action) => {
@@ -41,6 +51,6 @@ export const mainSlice = createSlice({
   },
 });
 
-export const { setToken, setAlert, setLoading } = mainSlice.actions;
+export const { setToken, setAlert, setLoading, setUser } = mainSlice.actions;
 
 export default mainSlice.reducer;

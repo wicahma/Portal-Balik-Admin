@@ -4,11 +4,36 @@ import { Button, Input } from "@material-tailwind/react";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import xlsx, { IContent, IJsonSheet } from "json-as-xlsx";
+import { wrapper } from "@/redux/store";
+import { setUser } from "@/redux/slices/main";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 interface dateRange {
   start: string;
   end: string;
 }
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req, res, ...etc }) => {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session) {
+        return {
+          redirect: {
+            destination: "/",
+            permanent: false,
+          },
+        };
+      }
+
+      const { dispatch, getState } = store;
+      dispatch(setUser(session.user));
+      return {
+        props: {},
+      };
+    }
+);
 
 const Index = (props: any) => {
   const dataKualitas = useSelector(

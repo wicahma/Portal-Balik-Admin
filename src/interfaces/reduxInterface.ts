@@ -8,6 +8,12 @@ export interface Main {
   alert: AlertProps;
   isLoading: boolean;
   token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image: string;
+  };
 }
 
 export interface barangInterface {

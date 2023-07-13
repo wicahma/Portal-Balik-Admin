@@ -1,3 +1,4 @@
+import { reduxState } from "@/interfaces/reduxInterface";
 import {
   Accordion,
   AccordionBody,
@@ -14,9 +15,12 @@ import {
   Navbar,
   Typography,
 } from "@material-tailwind/react";
+import { signOut } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import Router from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const NavList = (props: any) => {
   return (
@@ -40,14 +44,10 @@ const NavList = (props: any) => {
   );
 };
 
-const Sidebars = () => {
-  const [open, setOpen] = React.useState<number>(0),
-    router = Router,
-    [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
-
-  const handleOpen = (value: number) => {
-    setOpen(open === value ? 0 : value);
-  };
+const Sidebars = (props: any) => {
+  const router = Router,
+    [openSidebar, setOpenSidebar] = React.useState<boolean>(false),
+    user = useSelector((state: reduxState) => state.main.user);
 
   const handleSidebar = () => {
     setOpenSidebar(!openSidebar);
@@ -116,6 +116,22 @@ const Sidebars = () => {
             Portal Balik
           </Button>
           <List>
+            {user && (
+              <ListItem className="p-0">
+                <div className="flex items-center flex-col border-b pb-5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt="profile-image"
+                    src={`${user.image}`}
+                    width={300}
+                    height={300}
+                    className="shadow-lg rounded-full w-[60%] object-cover overflow-hidden"
+                  />
+                  <h2 className="mt-5 font-medium text-xl">{user.name}</h2>
+                  <p className="font-normal text-sm">{user.email}</p>
+                </div>
+              </ListItem>
+            )}
             <ListItem
               onClick={() => {
                 handleSidebar();
@@ -169,6 +185,7 @@ const Sidebars = () => {
               className="bg-red-200 text-white hover:bg-red-700 focus:bg-red-700 active:bg-red-700 hover:text-white active:text-white focus:text-white"
               onClick={() => {
                 handleSidebar();
+                signOut();
                 router.push("/");
               }}
             >

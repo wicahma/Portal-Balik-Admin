@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { getServerSession } from "next-auth/next";
 import Product from "@/components/Product";
 import { wrapper } from "@/redux/store";
 import { setDataBarang, setDataKualitas } from "@/redux/slices/item";
 import Layout from "@/components/Layout";
+import { authOptions } from "../api/auth/[...nextauth]";
+import { useSession } from "next-auth/react";
+import { setUser } from "@/redux/slices/main";
 
 const barang = [
   {
@@ -127,14 +131,29 @@ const kualitas = [
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session) {
+        return {
+          redirect: {
+            destination: "/",
+            permanent: false,
+          },
+        };
+      }
+      console.log("session");
+      console.log(session);
+
       const { dispatch, getState } = store;
       dispatch(setDataBarang(barang));
       dispatch(setDataKualitas(kualitas));
-      return { props: {} };
+      dispatch(setUser(session.user));
+      return {
+        props: {},
+      };
     }
 );
 
-const index = (props: any) => {
+const Index = (props: any) => {
   return (
     <Layout>
       <Product />
@@ -142,4 +161,4 @@ const index = (props: any) => {
   );
 };
 
-export default index;
+export default Index;

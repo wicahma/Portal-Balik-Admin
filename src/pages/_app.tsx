@@ -4,24 +4,29 @@ import { ThemeProvider } from "@material-tailwind/react";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Provider } from "react-redux";
+import { SessionProvider } from "next-auth/react";
 
 export default function App({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
-  const { pageProps } = props;
+  const {
+    pageProps: { session, ...pageProps },
+  } = props;
   return (
-    <Provider store={store}>
-      <ThemeProvider>
-        <NextNProgress
-          color="#2563eb"
-          startPosition={0.1}
-          showOnShallow
-          options={{
-            easing: "ease",
-            speed: 1000,
-          }}
-        />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </Provider>
+    <SessionProvider session={session}>
+      <Provider store={store}>
+        <ThemeProvider>
+          <NextNProgress
+            color="#2563eb"
+            startPosition={0.1}
+            showOnShallow
+            options={{
+              easing: "ease",
+              speed: 1000,
+            }}
+          />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </Provider>
+    </SessionProvider>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Alerts from "./Alert";
 import Loading from "./Loading";
 import Sidebars from "./Sidebar";
@@ -13,6 +13,7 @@ interface LayoutInterface {
 const Layout = ({ children }: LayoutInterface) => {
   const barang = useSelector((state: reduxState) => state.item.dataBarang),
     jenisBarang = useSelector((state: reduxState) => state.item.dataKualitas);
+
   return (
     <main className="bg-white">
       <Alerts />
