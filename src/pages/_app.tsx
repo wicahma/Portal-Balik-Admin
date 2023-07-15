@@ -1,10 +1,10 @@
 import { wrapper } from "@/redux/store";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@material-tailwind/react";
+import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Provider } from "react-redux";
-import { SessionProvider } from "next-auth/react";
 
 export default function App({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
