@@ -1,7 +1,7 @@
 import { barangInterface, reduxState } from "@/interfaces/reduxInterface";
 import { Button, Input } from "@material-tailwind/react";
 import { useFormikContext } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const BarangForm = () => {
@@ -17,7 +17,6 @@ const BarangForm = () => {
       setFieldValue("_id", dataBarangPilihan._id);
       setFieldValue("upb", dataBarangPilihan.upb);
       setFieldValue("jenisBarang", dataBarangPilihan.jenisBarang);
-      //   setFieldValue("dokumenPemegang", dataBarangPilihan.dokumenPemegang);
       setFieldValue(
         "tanggalSPK",
         new Date(dataBarangPilihan.tanggalSPK).toISOString().slice(0, 10)
@@ -219,8 +218,7 @@ const BarangForm = () => {
         <Button
           color="green"
           onClick={() => {
-            if (Object.keys(errors).length !== 0) {
-              console.log("errors", errors);
+            if (Object.keys(errors).length > 0) {
               dispatch({
                 type: "main/setAlert",
                 payload: {

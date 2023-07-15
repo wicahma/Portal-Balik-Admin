@@ -14,8 +14,8 @@ const Loading = () => {
     >
       <div className="bg-white/5 shadow-lg backdrop-blur-lg rounded-xl p-3">
         <svg className={loadingStyle.svg} viewBox="0 0 50 50">
-          <circle className={loadingStyle.ring} cx="25" cy="25" r="20"></circle>
-          <circle className={loadingStyle.ball} cx="25" cy="5" r="4.5"></circle>
+          <circle className={loadingStyle.ring} cx="25" cy="25" r="20" />
+          <circle className={loadingStyle.ball} cx="25" cy="5" r="4.5" />
         </svg>
       </div>
     </div>

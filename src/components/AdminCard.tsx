@@ -1,6 +1,5 @@
-import React from "react";
-import Layout from "@/styles/Layout.module.css";
 import { AdminCardInterface } from "@/interfaces/adminPageInterface";
+import Layout from "@/styles/Layout.module.css";
 
 const AdminCard = (props: AdminCardInterface) => {
   const { header, data, logo, logoClass } = props;

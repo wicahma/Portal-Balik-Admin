@@ -54,18 +54,25 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
       string | undefined
     >("");
 
+  useEffect(() => {
+    setDataProduct(initData);
+  }, [initData]);
+
   const findProduct = (input: string) => {
     if (input.length !== 0) {
       return setDataProduct(
         product.filter(
           (item: barangInterface | kualitasInterface | any) =>
-            item._id.includes(input) ||
+            item._id.toString().includes(input) ||
             (item.jenisBarang &&
               item.jenisBarang.toLowerCase().includes(input.toLowerCase())) ||
             (item.upb &&
               item.upb.toLowerCase().includes(input.toLowerCase())) ||
             (item._idBarang &&
-              item._idBarang.toLowerCase().includes(input.toLowerCase())) ||
+              item._idBarang
+                .toString()
+                .toLowerCase()
+                .includes(input.toLowerCase())) ||
             (item.namaPemegang &&
               item.namaPemegang.toLowerCase().includes(input.toLowerCase())) ||
             (item.dokumenPemegang &&
@@ -83,8 +90,8 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
           setDataProduct(
             product.filter(
               (item: barangInterface) =>
-                spmFilterValue.awal < item.tanggalSPM &&
-                item.tanggalSPM < spmFilterValue.akhir
+                spmFilterValue.awal < item.tanggalSPM.split("T")[0] &&
+                item.tanggalSPM.split("T")[0] < spmFilterValue.akhir
             )
           );
         if (spkFilter)
@@ -92,8 +99,8 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
             product.filter(
               (item: barangInterface) =>
                 spkFilter &&
-                spkFilterValue.awal < item.tanggalSPK &&
-                item.tanggalSPK < spkFilterValue.akhir
+                spkFilterValue.awal < item.tanggalSPK.split("T")[0] &&
+                item.tanggalSPK.split("T")[0] < spkFilterValue.akhir
             )
           );
         if (sp2dFilter)
@@ -101,8 +108,8 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
             product.filter(
               (item: barangInterface) =>
                 sp2dFilter &&
-                sp2dFilterValue.awal < item.tanggalSP2D &&
-                item.tanggalSP2D < sp2dFilterValue.akhir
+                sp2dFilterValue.awal < item.tanggalSP2D.split("T")[0] &&
+                item.tanggalSP2D.split("T")[0] < sp2dFilterValue.akhir
             )
           );
         break;
@@ -385,13 +392,13 @@ const Finder = ({ initData, resultCallback, identifier }: FinderInterface) => {
                 size="sm"
                 color="light-green"
                 onClick={() => {
-                  //NOTE - Filter Barang
-                  console.log("spm", spmFilterValue);
-                  console.log("spk", spkFilterValue);
-                  console.log("sp2d", sp2dFilterValue);
-                  //NOTE - Filter Kualitas
-                  console.log("kualitas", kualitasFilterValue);
-                  console.log("status", statusFilterValue);
+                  // //NOTE - Filter Barang
+                  // console.log("spm", spmFilterValue);
+                  // console.log("spk", spkFilterValue);
+                  // console.log("sp2d", sp2dFilterValue);
+                  // //NOTE - Filter Kualitas
+                  // console.log("kualitas", kualitasFilterValue);
+                  // console.log("status", statusFilterValue);
                   filterProduct(identifier);
                 }}
               >

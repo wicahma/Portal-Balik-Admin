@@ -1,25 +1,16 @@
 import { reduxState } from "@/interfaces/reduxInterface";
 import {
-  Accordion,
-  AccordionBody,
-  AccordionHeader,
   Button,
   Card,
-  Chip,
-  Collapse,
-  IconButton,
   List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
-  Navbar,
-  Typography,
+  Typography
 } from "@material-tailwind/react";
 import { signOut } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import Router from "next/router";
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 const NavList = (props: any) => {
@@ -55,10 +46,10 @@ const Sidebars = (props: any) => {
 
   return (
     <>
-      <div className="fixed top-4 left-4 z-[900]">
+      <div className="fixed top-4 left-5 z-[900]">
         <Button
           color="white"
-          className="p-3 flex items-center gap-3"
+          className="p-3 flex items-center gap-3 rounded-xl"
           onClick={() => handleSidebar()}
         >
           <svg
@@ -113,7 +104,7 @@ const Sidebars = (props: any) => {
                 clipRule="evenodd"
               />
             </svg>
-            Portal Balik
+            Sitaan Besti
           </Button>
           <List>
             {user && (
@@ -186,7 +177,6 @@ const Sidebars = (props: any) => {
               onClick={() => {
                 handleSidebar();
                 signOut();
-                router.push("/");
               }}
             >
               <ListItemPrefix>

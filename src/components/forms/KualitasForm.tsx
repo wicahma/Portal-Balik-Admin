@@ -27,6 +27,7 @@ const KualitasForm = () => {
       (state: reduxState) => state.item.dataBarang
     ),
     [isHstoryExist, setIsHstoryExist] = React.useState<boolean>(false),
+    [isDocumentSame, setIsDocumentSame] = React.useState<boolean>(false),
     [dataBarang, setDataBarang] = React.useState<barangInterface[]>(barang),
     [dataBarangKe, setDataBarangKe] = React.useState<number[]>([]),
     [showInput, setShowInput] = React.useState<boolean>(false),
@@ -52,7 +53,7 @@ const KualitasForm = () => {
 
   const addBarangKe = (id: string | undefined) => {
     const data: barangInterface = barang.filter(
-      (item: barangInterface) => item._id === id
+      (item: barangInterface) => item._id?.toString() === id
     )[0];
     setDataBarangKe([]);
     for (let i = 1; i <= data.jumlahBarang; i++) {
@@ -62,10 +63,10 @@ const KualitasForm = () => {
 
   useEffect(() => {
     if (dataKualitasPilihan) {
-      setFieldValue("_id", dataKualitasPilihan._id);
-      setFieldValue("_idBarang", dataKualitasPilihan._idBarang);
+      setFieldValue("_id", dataKualitasPilihan._id?.toString());
+      setFieldValue("_idBarang", dataKualitasPilihan._idBarang?.toString());
       setFieldValue("namaPemegang", dataKualitasPilihan.namaPemegang);
-      setFieldValue("barangKe", dataKualitasPilihan.barangKe);
+      setFieldValue("barangKe", dataKualitasPilihan.barangKe?.toString());
       setFieldValue("kondisi", dataKualitasPilihan.kondisi);
       setFieldValue("status", dataKualitasPilihan.status);
       setFieldValue("fetchType", "update");
@@ -79,25 +80,28 @@ const KualitasForm = () => {
       if (
         dataKualitas.filter(
           (data) =>
-            data.barangKe === values.barangKe.toString() &&
-            data._idBarang === values._idBarang.toString()
+            data.barangKe?.toString() === values.barangKe.toString() &&
+            data._idBarang?.toString() === values._idBarang.toString()
         ).length > 0
       ) {
         setIsHstoryExist(true);
+        setFieldValue("fetchType", "update");
+        setFieldValue("isDocumentSame", true);
       } else {
         setIsHstoryExist(false);
+        setFieldValue("fetchType", "create");
+        setFieldValue("isDocumentSame", false);
       }
       setShowInput(true);
     }
   }, [values.barangKe, values._idBarang, dataKualitas]);
 
   const findBarang = (input: string) => {
-    console.log(input);
     if (input.length > 0) {
       return setDataBarang(
         barang.filter(
           (item: barangInterface | any) =>
-            item._id.includes(input) ||
+            item._id.toString().includes(input) ||
             item.jenisBarang.toLowerCase().includes(input.toLowerCase())
         )
       );
@@ -105,14 +109,32 @@ const KualitasForm = () => {
     return setDataBarang(barang);
   };
 
+  useEffect(() => {
+    if (isDocumentSame) {
+      setFieldValue("dokumenPemegang", dataKualitasPilihan?.dokumenPemegang);
+      const data = dataKualitas.filter(
+        (data) =>
+          data.barangKe?.toString() === values.barangKe.toString() &&
+          data._idBarang?.toString() === values._idBarang.toString()
+      )[0];
+      setFieldValue("namaPemegang", data.namaPemegang);
+      setFieldValue("dokumenPemegang", data.dokumenPemegang);
+    } else {
+      setFieldValue("dokumenPemegang", null);
+      setFieldValue("namaPemegang", null);
+      files.current!.value = "";
+      files.current!.files = null;
+    }
+  }, [isDocumentSame]);
+
   return (
     <div className="grid grid-cols-9 gap-3 mb-10">
-      {dataKualitasPilihan && (
+      {values.fetchType === "update" && (
         <div className="bg-white col-span-9 shadow-xl rounded-lg px-3 py-2 uppercase text-center font-normal">
           <span className="bg-red-400 rounded-md px-2 text-white mx-1">
-            update
+            Tambah riwayat kualitas
           </span>
-          Id - {dataKualitasPilihan._id}
+          Id barang - {values._idBarang} | ke - {values.barangKe}
         </div>
       )}
       <div className="col-span-9 relative">
@@ -126,8 +148,9 @@ const KualitasForm = () => {
               ? errors._idBarang
               : "ID Barang"
           }`}
-          value={values._idBarang}
+          value={values._idBarang.toString()}
           error={touched._idBarang && errors._idBarang ? true : false}
+          disabled={values.fetchType === "update" ? true : false}
           onMouseUp={() => setDataBarang(barang)}
           onChange={(e) => {
             setFieldValue("_idBarang", e?.toString());
@@ -137,11 +160,14 @@ const KualitasForm = () => {
           selected={(e) =>
             `${
               values._idBarang &&
-              dataBarang.filter((data) => data._id === values._idBarang)[0]._id
+              dataBarang.filter(
+                (data) => data._id?.toString() === values._idBarang.toString()
+              )[0]._id
             } - ${
               values._idBarang &&
-              dataBarang.filter((data) => data._id === values._idBarang)[0]
-                .jenisBarang
+              dataBarang.filter(
+                (data) => data._id?.toString() === values._idBarang.toString()
+              )[0].jenisBarang
             }`
           }
         >
@@ -152,7 +178,11 @@ const KualitasForm = () => {
             onChange={(e) => findBarang(e.target.value)}
           />
           {dataBarang?.map((item: barangInterface, i: number) => (
-            <Option value={item._id} key={item._id} className="uppercase">
+            <Option
+              value={item._id?.toString()}
+              key={item._id}
+              className="uppercase"
+            >
               {item._id} - {item.jenisBarang}
             </Option>
           ))}
@@ -163,6 +193,7 @@ const KualitasForm = () => {
         <Input
           className="md:col-span-1 col-span-2"
           type="text"
+          disabled={isDocumentSame}
           color="orange"
           label={`${
             errors.namaPemegang && touched.namaPemegang
@@ -195,13 +226,23 @@ const KualitasForm = () => {
                     labelProps={{
                       className: "text-xs font-normal",
                     }}
+                    onChange={() => {
+                      setIsDocumentSame(!isDocumentSame);
+                      setFieldValue("isDocumentSame", !isDocumentSame);
+                    }}
+                    checked={isDocumentSame}
                     label="Apakah dokumen pemegang sama dengan dokumen sebelumnya?"
                   />
                 )}
-                <div className="flex  justify-start items-start gap-5">
+                <div
+                  className={`flex ${
+                    isDocumentSame ? "blur" : "blur-0"
+                  } justify-start items-start gap-5`}
+                >
                   <input
                     type="file"
                     ref={files}
+                    disabled={isDocumentSame}
                     accept="application/pdf,application/vnd.ms-excel"
                     onChange={(file: any) => {
                       const data = file.target.files[0];
@@ -335,6 +376,7 @@ const KualitasForm = () => {
           }`}
           value={values.barangKe.toString()}
           error={touched.barangKe && errors.barangKe ? true : false}
+          disabled={values.fetchType !== "update" ? false : true}
           animate={{
             mount: { y: 0 },
             unmount: { y: 25 },
@@ -346,7 +388,8 @@ const KualitasForm = () => {
                 ? `${
                     values._idBarang &&
                     dataBarang.filter(
-                      (data) => data._id === values._idBarang
+                      (data) =>
+                        data._id?.toString() === values._idBarang.toString()
                     )[0].jenisBarang
                   } - ${values.barangKe}`
                 : ""
@@ -357,8 +400,10 @@ const KualitasForm = () => {
             dataBarangKe?.map((item: any, i: number) => (
               <Option value={item.toString()} key={i}>
                 {
-                  dataBarang.filter((data) => data._id === values._idBarang)[0]
-                    .jenisBarang
+                  dataBarang.filter(
+                    (data) =>
+                      data._id?.toString() === values._idBarang.toString()
+                  )[0].jenisBarang
                 }{" "}
                 - {i + 1}
               </Option>
@@ -429,6 +474,7 @@ const KualitasForm = () => {
             gambar.current!.files = null;
             setDataBarangKe([]);
             setShowInput(false);
+            setIsDocumentSame(false);
             resetForm();
           }}
         >
@@ -437,7 +483,7 @@ const KualitasForm = () => {
         <Button
           color="green"
           onClick={() => {
-            if (errors) {
+            if (Object.keys(errors).length > 0) {
               console.log(errors);
               dispatch({
                 type: "main/setAlert",

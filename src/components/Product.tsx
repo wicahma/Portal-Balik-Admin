@@ -1,36 +1,46 @@
 import {
+  barangValidationSchema,
+  kualitasValidationSchema,
+} from "@/interfaces/adminPageInterface";
+import {
+  barangInterface,
+  initBarang,
+  initKualitas,
+  kualitasInterface,
+  reduxState,
+} from "@/interfaces/reduxInterface";
+import { createBarang, updateBarang } from "@/redux/actions/barang-action";
+import {
+  createKualitas,
+  createKualitasNoPDF,
+} from "@/redux/actions/kualitas-action";
+import { setLoading } from "@/redux/slices/main";
+import {
   Tab,
   TabPanel,
   Tabs,
   TabsBody,
   TabsHeader,
 } from "@material-tailwind/react";
-import React from "react";
-import DataTable from "./DataTable";
 import { Form, Formik } from "formik";
+import { useSession } from "next-auth/react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import DataTable from "./DataTable";
+import Finder from "./finder/Finder";
 import BarangForm from "./forms/BarangForm";
 import KualitasForm from "./forms/KualitasForm";
-import {
-  barangInterface,
-  initBarang,
-  initKualitas,
-  reduxState,
-} from "@/interfaces/reduxInterface";
-import {
-  barangValidationSchema,
-  kualitasValidationSchema,
-} from "@/interfaces/adminPageInterface";
-import Finder from "./finder/Finder";
 
 const Product = (props: any) => {
   const dispatch = useDispatch(),
     barang = useSelector((state: reduxState) => state.item.dataBarang),
     [filteredBarang, setFilteredBarang] = React.useState<barangInterface[]>([]),
+    session = useSession(),
     kualitas = useSelector((state: reduxState) => state.item.dataKualitas),
-    [filteredKualitas, setFilteredKualitas] = React.useState<barangInterface[]>(
-      []
-    );
+    [filteredKualitas, setFilteredKualitas] = React.useState<
+      kualitasInterface[]
+    >([]);
+
   const data = [
     {
       label: "Barang",
@@ -42,15 +52,26 @@ const Product = (props: any) => {
             validationSchema={barangValidationSchema}
             validateOnChange
             validateOnMount
-            onSubmit={async (values, { setSubmitting }) => {
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
               setSubmitting(true);
-              // dispatch({
-              //   type: "main/setLoading",
-              //   payload: true,
-              // });
-              console.log(values);
-              setSubmitting(true);
-              //   fetchProduk("outbond", values, values._id);
+              dispatch(setLoading(true));
+
+              if (values.fetchType === "create") {
+                createBarang({
+                  dispatch: dispatch,
+                  datas: values,
+                  session: session,
+                  resetForm: resetForm,
+                });
+              } else {
+                updateBarang({
+                  id: values._id,
+                  dispatch,
+                  datas: values,
+                  session: session,
+                  resetForm: resetForm,
+                });
+              }
               return false;
             }}
           >
@@ -78,6 +99,8 @@ const Product = (props: any) => {
                     "Harga Satuan",
                     "Jumlah Harga",
                     "Total Belanja",
+                    "dibuat pada",
+                    "diperbarui pada",
                   ]}
                   tableData={filteredBarang}
                 />
@@ -97,14 +120,27 @@ const Product = (props: any) => {
             validationSchema={kualitasValidationSchema}
             validateOnChange
             validateOnMount
-            onSubmit={async (values, { setSubmitting }) => {
-              // dispatch({
-              //   type: "main/setLoading",
-              //   payload: true,
-              // });
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
               setSubmitting(true);
-              console.log(values);
-              //   fetchProduk("outbond", values, values._id);
+              resetForm();
+              if (
+                values.fetchType === "update" &&
+                values.isDocumentSame === true
+              ) {
+                createKualitasNoPDF({
+                  dispatch,
+                  datas: values,
+                  session: session,
+                  resetForm: resetForm,
+                });
+              } else {
+                createKualitas({
+                  dispatch: dispatch,
+                  datas: values,
+                  session: session,
+                  resetForm: resetForm,
+                });
+              }
               return false;
             }}
           >
@@ -119,15 +155,18 @@ const Product = (props: any) => {
                 <DataTable
                   identifier="kualitas"
                   tableTitle={[
+                    "qr Code",
                     "ID Kualitas",
+                    "UUID Kualitas",
                     "ID Barang",
                     "Gambar",
                     "Nama Pemegang",
                     "Dokumen Pemegang",
                     "Kondisi",
-                    "Tanggal Pengecekan",
                     "Status",
                     "Barang Ke",
+                    "Tanggal pembuatan",
+                    "Tanggal Pengecekan",
                   ]}
                   tableData={filteredKualitas}
                 />

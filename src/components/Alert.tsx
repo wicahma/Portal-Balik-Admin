@@ -1,5 +1,5 @@
-import { Alert } from "@material-tailwind/react";
 import { AlertProps, reduxState } from "@/interfaces/reduxInterface";
+import { Alert } from "@material-tailwind/react";
 import { colors } from "@material-tailwind/react/types/generic";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +44,7 @@ const Alerts = () => {
   return (
     <Alert
       open={show}
-      className="fixed shadow-xl lg:container w-[90%] top-20 left-1/2 !z-[3000]"
+      className="fixed shadow-xl lg:container w-[90%] top-20 left-1/2 !z-[10000]"
       color={color}
       variant="filled"
       icon={
