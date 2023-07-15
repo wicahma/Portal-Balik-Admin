@@ -1,7 +1,7 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import { Action, ThunkAction, configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
-import { mainSlice } from "./slices/main";
 import { itemSlice } from "./slices/item";
+import { mainSlice } from "./slices/main";
 
 const store = configureStore({
   reducer: {

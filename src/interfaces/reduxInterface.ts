@@ -50,6 +50,7 @@ export const initBarang: barangInterface = {
 
 export interface kualitasInterface {
   _id?: string;
+  _uuid?: string;
   _idBarang: string;
   gambar: string;
   namaPemegang: string;
@@ -57,12 +58,14 @@ export interface kualitasInterface {
   kondisi: "baik" | "rusak" | "service" | "";
   status: "digunakan" | "tidak-digunakan" | "";
   barangKe: string;
-  updateAt: string;
+  updatedAt: string;
   fetchType?: "create" | "update";
+  isDocumentSame?: boolean;
 }
 
 export const initKualitas: kualitasInterface = {
   _id: "",
+  _uuid: "",
   _idBarang: "",
   gambar: "",
   namaPemegang: "",
@@ -70,8 +73,9 @@ export const initKualitas: kualitasInterface = {
   kondisi: "",
   status: "",
   barangKe: "",
-  updateAt: "",
+  updatedAt: "",
   fetchType: "create",
+  isDocumentSame: false,
 };
 
 export interface Item {

@@ -1,13 +1,17 @@
 import Layout from "@/components/Layout";
 import { kualitasInterface, reduxState } from "@/interfaces/reduxInterface";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getAllBarang } from "@/redux/actions/barang-action";
+import { getAllKualitas } from "@/redux/actions/kualitas-action";
+import { checkSession } from "@/redux/actions/user-action";
+import { setUser } from "@/redux/slices/main";
+import { wrapper } from "@/redux/store";
 import { Button, Input } from "@material-tailwind/react";
+import xlsx, { IJsonSheet } from "json-as-xlsx";
+import { getServerSession } from "next-auth";
+import { signOut } from "next-auth/react";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import xlsx, { IContent, IJsonSheet } from "json-as-xlsx";
-import { wrapper } from "@/redux/store";
-import { setUser } from "@/redux/slices/main";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 interface dateRange {
   start: string;
@@ -27,10 +31,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
         };
       }
 
-      const { dispatch, getState } = store;
+      const { dispatch } = store;
+      const isValid = await checkSession({ session, dispatch });
+      await getAllBarang({ dispatch, session });
+      await getAllKualitas({ dispatch, session });
       dispatch(setUser(session.user));
       return {
-        props: {},
+        props: { isUserValid: isValid },
       };
     }
 );
@@ -53,19 +60,17 @@ const Index = (props: any) => {
   const generateXlsx = async (type: string, downloadAll: boolean) => {
     let newDataKualitas: any = [];
     const thisDay = new Date();
-    // let datas: any = dataKualitas;
-    // console.log(datas);
     if (type === "month") {
       !downloadAll
         ? (newDataKualitas = dataKualitas.filter((item: kualitasInterface) => {
-            const date = new Date(item.updateAt);
+            const date = new Date(item.updatedAt);
             return (
               date >= new Date(dateRangeMonth.start) &&
               date <= new Date(dateRangeMonth.end)
             );
           }))
         : (newDataKualitas = dataKualitas.filter((item: kualitasInterface) => {
-            const date = new Date(item.updateAt);
+            const date = new Date(item.updatedAt);
             return (
               date >= new Date(date.getFullYear(), date.getMonth(), 1) &&
               date <= new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -74,14 +79,14 @@ const Index = (props: any) => {
     } else {
       !downloadAll
         ? (newDataKualitas = dataKualitas.filter((item) => {
-            const date = new Date(item.updateAt);
+            const date = new Date(item.updatedAt);
             return (
               date >= new Date(dateRangeWeek.start) &&
               date <= new Date(dateRangeWeek.end)
             );
           }))
         : (newDataKualitas = dataKualitas.filter((item) => {
-            const date = new Date(item.updateAt);
+            const date = new Date(item.updatedAt);
             return (
               date >= new Date(thisDay.getDate() - thisDay.getDay()) &&
               date <= new Date(thisDay.getDate() - thisDay.getDay() + 6)
@@ -100,7 +105,7 @@ const Index = (props: any) => {
           { value: "kondisi", label: "Kondisi" },
           { value: "status", label: "Status" },
           { value: "barangKe", label: "List Barang Ke" },
-          { value: "updateAt", label: "Pembaruan Terakhir" },
+          { value: "updatedAt", label: "Pembaruan Terakhir" },
         ],
         content: newDataKualitas,
       },
@@ -115,7 +120,7 @@ const Index = (props: any) => {
           { value: "kondisi", label: "Kondisi" },
           { value: "status", label: "Status" },
           { value: "barangKe", label: "List Barang Ke" },
-          { value: "updateAt", label: "Pembaruan Terakhir" },
+          { value: "updatedAt", label: "Pembaruan Terakhir" },
         ],
         content: newDataKualitas.filter(
           (data: any) => data.kondisi === "rusak"
@@ -132,7 +137,7 @@ const Index = (props: any) => {
           { value: "kondisi", label: "Kondisi" },
           { value: "status", label: "Status" },
           { value: "barangKe", label: "List Barang Ke" },
-          { value: "updateAt", label: "Pembaruan Terakhir" },
+          { value: "updatedAt", label: "Pembaruan Terakhir" },
         ],
         content: newDataKualitas.filter((data: any) => data.kondisi === "baik"),
       },
@@ -147,7 +152,7 @@ const Index = (props: any) => {
           { value: "kondisi", label: "Kondisi" },
           { value: "status", label: "Status" },
           { value: "barangKe", label: "List Barang Ke" },
-          { value: "updateAt", label: "Pembaruan Terakhir" },
+          { value: "updatedAt", label: "Pembaruan Terakhir" },
         ],
         content: newDataKualitas.filter(
           (data: any) => data.kondisi === "service"
@@ -170,7 +175,6 @@ const Index = (props: any) => {
     const start = new Date(dateRangeMonth.start),
       epochTime30Days = start.setDate(start.getDate() + 30);
     const endDate = new Date(epochTime30Days);
-    console.log(endDate);
     setDateRangeMonth({
       ...dateRangeMonth,
       end:
@@ -180,7 +184,6 @@ const Index = (props: any) => {
         "-" +
         endDate.getDate(),
     });
-    console.log(dateRangeMonth);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRangeMonth.start]);
 
@@ -188,7 +191,6 @@ const Index = (props: any) => {
     const start = new Date(dateRangeWeek.start),
       epochTime30Days = start.setDate(start.getDate() + 7);
     const endDate = new Date(epochTime30Days);
-    console.log(endDate);
     setDateRangeWeek({
       ...dateRangeWeek,
       end:
@@ -198,9 +200,13 @@ const Index = (props: any) => {
         "-" +
         endDate.getDate(),
     });
-    console.log(dateRangeWeek);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRangeWeek.start]);
+
+  if (!props.isUserValid) {
+    signOut();
+    return <></>;
+  }
   return (
     <Layout>
       <div className="container text-gray-800 mx-auto block md:p-10 py-10 px-2">

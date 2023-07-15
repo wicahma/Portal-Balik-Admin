@@ -1,7 +1,7 @@
+import { Item, initBarang, initKualitas } from "@/interfaces/reduxInterface";
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { AppState } from "../store";
-import { Item, initBarang, initKualitas } from "@/interfaces/reduxInterface";
 
 const hydrate = createAction<AppState>(HYDRATE);
 

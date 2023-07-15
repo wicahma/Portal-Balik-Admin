@@ -44,38 +44,57 @@ export const kualitasValidationSchema = Yup.object().shape({
     .nullable()
     .required("Gambar dibutuhkan!")
     .test(
-      "is-correct-file",
-      "Ukuran File terlalu besar, maksimal 5Mb!",
+      "is-big-file",
+      "Ukuran File terlalu besar, maksimal 10Mb!",
       checkIfFilesAreTooBig
     )
     .test(
-      "is-big-file",
+      "is-correct-file",
       "Tipe File Salah, hanya menerima tipedata Gambar!",
       checkImage
     ),
   namaPemegang: Yup.string()
     .required("Nama Pemegang dibutuhkan!")
     .max(255, "Karakter maksimal 255!"),
-  dokumenPemegang: Yup.mixed()
-    .nullable()
-    .required("Dokumen Pemegang dibutuhkan!")
-    .test(
-      "is-correct-file",
-      "Ukuran File Terlalu besar! maks 5Mb",
-      checkIfFilesAreTooBig
-    )
-    .test("is-big-file", "Tipe File Salah! Hanya menerima file PDF", checkPDF),
-  kualitas: Yup.string().required("Kualitas dibutuhkan!"),
+  dokumenPemegang: Yup.mixed().when(
+    ["fetchType", "isDocumentSame"],
+    ([fetchType, isDocumentSame], schema) => {
+      if (fetchType.toString() === "create" && !isDocumentSame) {
+        return schema
+          .nullable()
+          .required("Dokumen Pemegang dibutuhkan!")
+          .test(
+            "is-correct-file",
+            "Ukuran File Terlalu besar! maks 10Mb",
+            checkIfFilesAreTooBig
+          )
+          .test(
+            "is-big-file",
+            "Tipe File Salah! Hanya menerima file PDF",
+            checkPDF
+          );
+      }
+      return schema.required("Dokumen Pemegang dibutuhkan!");
+    }
+  ),
+  kondisi: Yup.string().required("Kondisi dibutuhkan!"),
   status: Yup.string().required("Status dibutuhkan!"),
   barangKe: Yup.number()
     .required("Barang Ke dibutuhkan!")
     .typeError("List Barang harus berupa angka!"),
 });
 
+// Yup.mixed().when(["fetchType"], (fetchType, schema) => {
+//   if (fetchType.toString() === "create") {
+//     return schema.required("Gambar mobil harus diisi !");
+//   }
+//   return schema;
+// })
+
 export const barangValidationSchema = Yup.object().shape({
   upb: Yup.string()
     .required("UPB dibutuhkan!")
-    .max(255, "Karakter maksimal 255!"),
+    .max(100, "Karakter maksimal 255!"),
   jenisBarang: Yup.string()
     .required("Jenis Barang dibutuhkan!")
     .max(255, "Karakter maksimal 255!"),
