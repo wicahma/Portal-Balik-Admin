@@ -213,7 +213,7 @@ const DataTable = (props: any) => {
                   width={400}
                   height={400}
                 />
-                <Link
+                <a
                   href={dataQrCode?.qr ?? ""}
                   download={`QR-${
                     dataQrCode?.data?.jenisBarang ?? "BARANG"
@@ -236,7 +236,7 @@ const DataTable = (props: any) => {
                       <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
                     </svg>
                   </Button>
-                </Link>
+                </a>
               </>
             )}
           </div>
