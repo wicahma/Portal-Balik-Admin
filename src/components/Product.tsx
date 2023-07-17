@@ -121,8 +121,10 @@ const Product = (props: any) => {
             validateOnChange
             validateOnMount
             onSubmit={async (values, { setSubmitting, resetForm }) => {
+              dispatch(setLoading(true));
               setSubmitting(true);
               resetForm();
+              console.log(values);
               if (
                 values.fetchType === "update" &&
                 values.isDocumentSame === true

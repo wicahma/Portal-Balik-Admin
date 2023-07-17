@@ -76,6 +76,7 @@ export const createKualitas = async ({
       },
     })
     .then((res) => {
+      console.log(res);
       dispatch(
         setAlert({
           type: "success",
