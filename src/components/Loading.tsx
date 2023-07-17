@@ -8,7 +8,7 @@ const Loading = () => {
     <div
       className={`${
         isLoading
-          ? "opacity-100 w-screen z-[3000] h-screen"
+          ? "opacity-100 w-screen z-[10000] h-screen"
           : "opacity-0 -z-[100] w-0 h-0"
       } fixed flex top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 justify-center items-center bg-transparent transition-all duration-200 aspect-square`}
     >
