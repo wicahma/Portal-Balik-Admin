@@ -56,10 +56,8 @@ const PDF = (props: any) => {
     qr,
   } = query;
   useEffect(() => {
-    return () => {
-      print();
-    };
-  }, []);
+    print();
+  }, [query]);
   return (
     <div className="container mx-auto my-10 space-y-5">
       <h1 className="capitalize text-5xl font-bold">{jenisBarang}</h1>
