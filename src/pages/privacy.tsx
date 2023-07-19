@@ -76,7 +76,12 @@ const Privacy = () => {
             <li>
               Aplikasi Sibesti membutuhkan akses ke kamera dan galeri perangkat
               Anda agar Anda dapat melakukan pemindaian kode QR menggunakan
-              kamera dan mengunggah gambar scan dari galeri.
+              kamera dan megecek hasil scan dari galeri.
+            </li>
+            <li>
+              Kami tidak mengumpulkan dan juga mengambl data gambar yang anda
+              scan, kami hanya mengeceknya lalu setelah itu data yang ada akan
+              disimpan di penyimpanan ponsel apabila scan berhasil.
             </li>
           </ul>
         </div>
@@ -85,24 +90,13 @@ const Privacy = () => {
           <ul className="list-item ml-10 list-disc">
             <li>
               Kami mengambil langkah-langkah yang wajar untuk melindungi
-              informasi pribadi AndNamun, kami tidak dapat menjamin keamanan
+              informasi pribadi Anda namun, kami tidak dapat menjamin keamanan
               mutlak data yang dikirimkan melalui internet atau disimpan di
               perangkat Anda.
             </li>
           </ul>
         </div>
 
-        <div>
-          <p>Tautan Eksternal:</p>
-          <ul className="list-item ml-10 list-disc">
-            <li>
-              Aplikasi Sibesti mungkin menyediakan tautan ke situs web
-              eksternal. Kami tidak bertanggung jawab atas praktik privasi atau
-              konten situs web eksternal ini. Harap tinjau kebijakan privasi
-              mereka sebelum memberikan informasi pribadi.
-            </li>
-          </ul>
-        </div>
         <div>
           <p>Perubahan Kebijakan Privasi:</p>
           <ul className="list-item ml-10 list-disc">
@@ -118,7 +112,8 @@ const Privacy = () => {
 
         <p>
           Jika Anda memiliki pertanyaan atau kekhawatiran tentang kebijakan
-          privasi kami, jangan ragu untuk menghubungi kami melalui [kontak].
+          privasi kami, jangan ragu untuk menghubungi kami melalui
+          sibesti.service@gmail.com
         </p>
 
         <p>Terima kasih telah menggunakan aplikasi Sibesti!</p>
